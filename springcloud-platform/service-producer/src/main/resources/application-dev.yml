@@ -1,0 +1,142 @@
+server:
+  port: 9101
+
+spring:
+  application:
+    name: service-producer
+
+  sleuth:
+    sampler:
+      probability: 1.0
+    web:
+      client:
+        enabled: true
+  zipkin:
+    base-url: http://localhost:9003/
+
+  #datasource
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/springcloud_service_producer?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=UTF8&serverTimezone=GMT
+      username: dev
+      password: dev123456
+
+      #连接池配置
+      #初始化创建的连接数
+      initial-size: 50
+      #最大连接数
+      max-active: 100
+      #最小连接数
+      min-idle: 5
+      #获取连接时最大等待时间（毫秒）
+      max-wait: 1000
+      #对支持游标的数据库性能提升巨大，例如oracle,但是使用MySQL时建议关闭
+      pool-prepared-statements: false
+      #启用pool-prepared-statements时才会设值大于0
+      max-pool-prepared-statement-per-connection-size: -1
+      #检测连接是否有效的sql
+      validation-query: SELECT 1
+      #检测连接是否有效的超时时间（秒）
+      validation-query-timeout: 1
+      #开启会降低性能
+      test-on-borrow: false
+      #开启会降低性能
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      #启用加密，配置公钥
+      #加密规则
+      #命令行输入 java -cp druid-1.1.10.jar com.alibaba.druid.filter.config.ConfigTools 数据库原始密码
+      #结果显示为  privateKey:xxxxxx
+      #           publicKey:xxxxxx
+      #           password:xxxxxx
+      #则在spring.datasource.druid.password填入生成的密码，然后设置config.decrypt=true,configs.decrypt.key=${publicKey}
+      connection-properties: configs.decrypt=false;configs.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAITzkOZ5i2VFAQkofoL6kD8yjnvu00bO+o08NJHp8Qb7YX5uB1i8gqPAk6t+Qn0Tle57cRiIzfpG1hNS+42aBksCAwEAAQ==
+      #关联spring监控，多个用逗号隔开，如果代理的类没有定义interface,则需要设置spring.interceptor.proxy-target-class=true
+      aop-patterns: com.tonytaotao.service.producer.*.service.impl.*
+
+      filter:
+        #配置stat-开启监控
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+          db-type: mysql
+        #配置config-开启数据库密码加密
+        config:
+          enabled: true
+        #配置wall，sql防火墙
+        wall:
+          enabled: true
+          db-type: mysql
+          config:
+            alter-table-allow: false
+            truncate-allow: false
+            drop-table-allow: false
+            none-base-statement-allow: false
+            update-where-none-check: true
+            select-into-outfile-allow: false
+          #被认为是攻击的sql进行LOG.error输出
+          log-violation: true
+          #被认为是攻击的sql抛出SQLException
+          throw-exception: true
+
+      #配置web-stat-filter
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /*.js,/*.gif,*.jpg,/*.png,/*.css,/*.ico,/druid/*
+        #知道当前的cookie用户是谁
+        principal-cookie-name: admin
+        #知道当前的session用户是谁
+        principal-session-name: admin
+        #监控单个url调用的sql列表
+        profile-enable: true
+        #session的统计功能
+        session-stat-enable: true
+        #最大session数
+        session-stat-max-count: 100000
+
+      #配置StatViewServlet
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: 123456
+        url-pattern: /druid/*
+        reset-enable: true
+        allow: 127.0.0.1
+
+#mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/com/tonytaotao/service/producer/*/mapper/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.tonytaotao.service.producer.*.entity
+  global-config:
+    #主键类型 0:"数据库ID自增", 1:"用户输入ID", 2:"全局唯一ID(数字类型唯一ID)", 3:"全局唯一ID UUID"
+    id-type: 0
+    #字段策略 0:"忽略判断", 1:"非 NULL 判断", 2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #刷新mapper 调试神器
+    refresh-mapper: true
+    #逻辑删除配置
+    logic-delete-value: 0
+    logic-not-delete-value: 1
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+#日志配置
+logging:
+  config: classpath:logConfig/log4j2-dev.xml
+
+#eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9000/eureka/

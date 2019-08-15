@@ -1,0 +1,15 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: zipkin-center
+
+# 必须加上这个，不然访问报错
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false
+
+
+#启动后，浏览器访问方式  http://localhost:9003/zipkin/
