@@ -1,4 +1,4 @@
-package com.tonytaotao.thread.test;
+package com.tonytaotao.thread;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
@@ -6,13 +6,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class ABCTreadOrderPrint {
+public class ABCOrderPrintTest {
 
     private Lock lock = new ReentrantLock();// 通过JDK5中的锁来保证线程的访问的互斥
     private Condition condition = lock.newCondition();// 线程协作
 
     public static void main(String[] args) {
-        ABCTreadOrderPrint abc = new ABCTreadOrderPrint();
+        ABCOrderPrintTest abc = new ABCOrderPrintTest();
 
         // 使用循环可以不局限于只有3个线程 交替, 任意多个都可以.
         PrintThread a = abc.new PrintThread("A", true);

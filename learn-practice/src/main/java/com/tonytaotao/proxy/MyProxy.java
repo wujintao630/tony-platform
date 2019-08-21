@@ -32,7 +32,7 @@ public class MyProxy {
 			;
 
 			// 2、把类生成文件
-			String fileName = "E:/CompanyWorkSpace/Test/src/com/tonytaotao/proxy/$Proxy0.java";
+			String fileName = "E:/CompanyWorkSpace/ProductConsumerTest/src/com/tonytaotao/proxy/$Proxy0.java";
 			File f = new File(fileName);
 			FileWriter fw = new FileWriter(f);
 			fw.write(proxyClass);
@@ -48,7 +48,7 @@ public class MyProxy {
 			fileMgr.close();
 			
 			//4、把class文件加载到内存
-			MyClassLoader myClassLoader=new MyClassLoader("E:/CompanyWorkSpace/Test/src/com/tonytaotao/proxy/");
+			MyClassLoader myClassLoader=new MyClassLoader("E:/CompanyWorkSpace/ProductConsumerTest/src/com/tonytaotao/proxy/");
 			Class proxy0Class=myClassLoader.findClass("$Proxy0");
 			Constructor constructor=proxy0Class.getConstructor(MyInvocationHandler.class);
 			Object o=constructor.newInstance(handler);
