@@ -9,7 +9,7 @@ public class SemaphoreTest {
         ResoureManager resoureManager = new ResoureManager();
         Thread[] threads = new Thread[100];
         for (int i = 0; i < 100; i++) {
-            Thread thread = new Thread(new ResourceUser(resoureManager, "tony-" + i));
+            Thread thread = new Thread(new ResourceUser(resoureManager, "tony-" + (i + 1)));
             threads[i] = thread;
         }
 
@@ -45,12 +45,11 @@ class ResoureManager{
     public void useResource(String userName) {
         try {
             semaphore.acquire();
-            int id = getResourceId();
-            if (id < 0) {
-                System.out.println("用户：" + userName  + "无资源可用");
-            } else {
-                System.out.println("用户：" + userName  + "正在使用" + id + "号资源");
-            }
+            int index = getResourceIndex();
+            System.out.println("用户：" + userName  + "正在使用" + (index + 1)  + "号资源");
+            Thread.sleep(500);
+            resourceArray[index] = true;
+            System.out.println("用户：" + userName  + "使用完毕，" + (index + 1) + "号资源已空闲");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -58,15 +57,17 @@ class ResoureManager{
         }
     }
 
-    // 找到一个可用的资源
-    private int getResourceId() {
-        int id = -1;
+    /**
+     * 找到一个可用的资源
+     */
+    private int getResourceIndex() {
+        int index = -1;
         try {
             reentrantLock.lock();
             for (int i = 0; i < 10; i ++) {
                 if (resourceArray[i] == true) {
                     resourceArray[i] = false;
-                    id = i;
+                    index = i;
                     break;
                 }
             }
@@ -75,7 +76,7 @@ class ResoureManager{
         } finally {
             reentrantLock.unlock();
         }
-        return id;
+        return index;
     }
 }
 
@@ -93,6 +94,5 @@ class ResourceUser implements Runnable {
     public void run() {
         System.out.println("用户：" + userName  + "准备使用资源");
         resoureManager.useResource(userName);
-        System.out.println("用户：" + userName  + "使用资源完毕");
     }
 }
