@@ -4,17 +4,21 @@ package com.tonytaotao.sort;
  * 冒泡排序
  * @author tonytaotao
  */
-public class BuddleSort {
+public class BuddleSortTest {
+
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		new BuddleSort().buddleSort(array);
+
+		buddleSort(array);
 		
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
+
 	}
 
-	public void buddleSort(int[] array) {
+	public static void buddleSort(int[] array) {
 		if(array!=null&&array.length>1){
 			for(int i=0;i<array.length;i++){
 				for(int j=0;j<array.length-i-1;j++){

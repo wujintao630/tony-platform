@@ -1,5 +1,7 @@
 package com.tonytaotao.proxy;
 
 public interface People {
-	public void eat() throws Throwable;
+
+	void eat() throws Throwable;
+
 }

@@ -5,17 +5,21 @@ package com.tonytaotao.sort;
  * @author tonytaotao
  * 
  */
-public class SelectSort {
+public class SelectSortTest {
+
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		new SelectSort().selectSort(array);
+
+		selectSort(array);
 		
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
+
 	}
 
-	public void selectSort(int[] array) {
+	public static void selectSort(int[] array) {
 		if(array!=null&&array.length>1){
 			for(int i=0;i<array.length-1;i++){
 				int minIndex=i;

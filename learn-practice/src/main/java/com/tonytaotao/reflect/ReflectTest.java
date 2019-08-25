@@ -1,4 +1,4 @@
-package com.tonytaotao.test;
+package com.tonytaotao.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -7,7 +7,7 @@ public class ReflectTest {
 
     public static void main(String[] args) throws Exception{
 
-        Class clazz = Class.forName("com.tonytaotao.test.Demo");
+        Class clazz = Class.forName("com.tonytaotao.reflect.Demo");
         Demo demo = (Demo) clazz.newInstance();
 
         System.out.println("Integer A before : " + demo.getInteger());
@@ -25,7 +25,7 @@ public class ReflectTest {
         System.out.println("Integer B after : " + demo.getInt());
 
 
-        Class clazz1 = Class.forName("com.tonytaotao.test.DemoStatic");
+        Class clazz1 = Class.forName("com.tonytaotao.reflect.DemoStatic");
         DemoStatic demo1 = (DemoStatic) clazz1.newInstance();
 
         System.out.println("Static Integer A before : " + demo1.getInteger());

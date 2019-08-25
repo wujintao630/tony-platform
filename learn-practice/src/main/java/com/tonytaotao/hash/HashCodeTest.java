@@ -1,4 +1,4 @@
-package com.tonytaotao.test;
+package com.tonytaotao.hash;
 
 public class HashCodeTest {
 

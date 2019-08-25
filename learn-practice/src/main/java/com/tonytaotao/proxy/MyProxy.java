@@ -13,10 +13,10 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 public class MyProxy {
+
 	static String rt = "\r\n";
 
-	public static Object createProxyInstance(ClassLoader loader, Class clazz,
-			MyInvocationHandler handler) {
+	public static Object createProxyInstance(ClassLoader loader, Class clazz, MyInvocationHandler handler) {
 		try {
 			Method[] methods = clazz.getMethods();
 			// 1、用流的方式创建一个java文件
@@ -32,7 +32,7 @@ public class MyProxy {
 			;
 
 			// 2、把类生成文件
-			String fileName = "E:/CompanyWorkSpace/ProductConsumerTest/src/com/tonytaotao/proxy/$Proxy0.java";
+			String fileName = "E:/WorkSpace/IDEAworkspace/tony-platform/learn-practice/src/main/java/com/tonytaotao/proxy/$Proxy0.java";
 			File f = new File(fileName);
 			FileWriter fw = new FileWriter(f);
 			fw.write(proxyClass);
@@ -48,7 +48,7 @@ public class MyProxy {
 			fileMgr.close();
 			
 			//4、把class文件加载到内存
-			MyClassLoader myClassLoader=new MyClassLoader("E:/CompanyWorkSpace/ProductConsumerTest/src/com/tonytaotao/proxy/");
+			MyClassLoader myClassLoader=new MyClassLoader("E:/WorkSpace/IDEAworkspace/tony-platform/learn-practice/src/main/java/com/tonytaotao/proxy/");
 			Class proxy0Class=myClassLoader.findClass("$Proxy0");
 			Constructor constructor=proxy0Class.getConstructor(MyInvocationHandler.class);
 			Object o=constructor.newInstance(handler);

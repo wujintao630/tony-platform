@@ -5,17 +5,21 @@ package com.tonytaotao.sort;
  * @author tonytaotao
  * 
  */
-public class QuickSort {
+public class QuickSortTest {
 
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		new QuickSort().quickSort(array, 0, array.length-1);
+
+		quickSort(array, 0, array.length-1);
+
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
+
 	}
 
-	public void quickSort(int[] array, int low, int high) {
+	public static void quickSort(int[] array, int low, int high) {
 		if(low<high){
 			int temp=array[low];//默认数组的第一个为中轴，此数将数组划为两个分数组，左边的比此值小，右边的比此值大
 			int i=low,j=high;//i代表从左往右开始扫描，j代表从右往左开始扫描

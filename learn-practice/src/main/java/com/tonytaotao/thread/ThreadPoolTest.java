@@ -5,7 +5,91 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class ThreadPoolCustomTest {
+public class ThreadPoolTest {
+
+
+    public static void main(String[] args) {
+
+        //fixedThreadPool();
+        //singleThreadPool();
+        //cacheThreadPool();
+        //scheduleThreadPool();
+
+        //customThreadPoolRunnable();
+        customThreadPoolcallable();
+
+    }
+
+
+    /*----------------------------系统线程池-----------------------------*/
+
+    /**
+     * 固定大小线程池
+     */
+    public static void fixedThreadPool() {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        runThreadPool(executorService);
+    }
+
+    /**
+     * 单一线程池
+     */
+    public static void singleThreadPool() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        runThreadPool(executorService);
+    }
+
+    /**
+     * 可变线程池
+     */
+    public static void cacheThreadPool() {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        runThreadPool(executorService);
+    }
+
+    /**
+     * 可调度线程池
+     */
+    public static void scheduleThreadPool() {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        MyThreadRunnable m1 = new MyThreadRunnable();
+        MyThreadRunnable m2 = new MyThreadRunnable();
+        MyThreadRunnable m3 = new MyThreadRunnable();
+        MyThreadRunnable m4 = new MyThreadRunnable();
+        MyThreadRunnable m5 = new MyThreadRunnable();
+
+        executorService.submit(m1);
+        executorService.submit(m2);
+        executorService.submit(m3);
+        executorService.schedule(m4, 5, TimeUnit.SECONDS);
+        executorService.schedule(m5, 5, TimeUnit.SECONDS);
+
+        executorService.shutdown();
+    }
+
+    public static void runThreadPool(ExecutorService executorService) {
+
+        MyThreadRunnable m1 = new MyThreadRunnable();
+        MyThreadRunnable m2 = new MyThreadRunnable();
+        MyThreadRunnable m3 = new MyThreadRunnable();
+        MyThreadRunnable m4 = new MyThreadRunnable();
+        MyThreadRunnable m5 = new MyThreadRunnable();
+
+        executorService.submit(m1);
+        executorService.submit(m2);
+        executorService.submit(m3);
+        executorService.submit(m4);
+        executorService.submit(m5);
+
+        executorService.shutdown();
+    }
+
+
+
+    /*----------------------------自定义线程池---------------------------*/
+
+
     /**
      * 核心线程数
      */
@@ -39,6 +123,9 @@ public class ThreadPoolCustomTest {
     private static ExecutorService executorService;
 
 
+    /**
+     * 初始化自定义线程池
+     */
     private static void initThreadPool() {
         blockingDeque = new ArrayBlockingQueue(100);
         threadFactory = new MyThreadFactory("tony");
@@ -47,19 +134,24 @@ public class ThreadPoolCustomTest {
 
     }
 
-
+    /**
+     * 无返回值线程池测试
+     */
     public static void customThreadPoolRunnable() {
 
         initThreadPool();
 
         for (int i  = 0; i < 10000 ; i++) {
-            MyCustomThreadRunnable myCustomThreadRunnable = new MyCustomThreadRunnable();
+            MyThreadRunnable myCustomThreadRunnable = new MyThreadRunnable();
             executorService.execute(myCustomThreadRunnable);
         }
 
         executorService.shutdown();
     }
 
+    /**
+     * 有返回值线程池测试
+     */
     public static void customThreadPoolcallable() {
 
         initThreadPool();
@@ -67,7 +159,7 @@ public class ThreadPoolCustomTest {
         List<Future<String>> futureList = new ArrayList<>();
 
         for (int i  = 0; i < 100 ; i++) {
-            MyCustomThreadCallable myCustomThreadCallable = new MyCustomThreadCallable();
+            MyThreadCallable myCustomThreadCallable = new MyThreadCallable();
             Future<String> future = executorService.submit(myCustomThreadCallable);
             futureList.add(future);
         }
@@ -87,12 +179,7 @@ public class ThreadPoolCustomTest {
 
     }
 
-    public static void main(String[] args) {
 
-        //customThreadPoolRunnable();
-        customThreadPoolcallable();
-
-    }
 }
 
 /**
@@ -116,6 +203,9 @@ class MyThreadFactory implements ThreadFactory {
     }
 }
 
+/**
+ * 自定义线程拒绝策略
+ */
 class MyRejectPolicy implements RejectedExecutionHandler {
 
     String threadName;
@@ -135,7 +225,10 @@ class MyRejectPolicy implements RejectedExecutionHandler {
     }
 }
 
-class MyCustomThreadRunnable implements Runnable {
+/**
+ * 无返回值线程
+ */
+class MyThreadRunnable implements Runnable {
 
     @Override
     public void run() {
@@ -150,7 +243,10 @@ class MyCustomThreadRunnable implements Runnable {
     }
 }
 
-class MyCustomThreadCallable implements Callable<String> {
+/**
+ * 有返回值线程
+ */
+class MyThreadCallable implements Callable<String> {
     @Override
     public String call() throws Exception {
 

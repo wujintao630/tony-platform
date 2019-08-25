@@ -1,19 +1,20 @@
 package com.tonytaotao.sort;
-public class SortTest {
+
+public class BinarySortTest {
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		SortTest test = new SortTest();
-		
-		// test.binarySort(array);
+
+		 binarySort(array);
+
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
+
 	}
 
-	
-
 	// 二分排序(乱序)
-	public void binarySort(int[] array) {
+	public static void binarySort(int[] array) {
 		int low, high;
 		int temp;// 临时变量
 		if (array != null && array.length > 0) {
@@ -31,20 +32,22 @@ public class SortTest {
 	}
 
 	// 二分查找(有序)
-	public Integer binaryFind(int[] array, int target, int low, int high) {
-
-		if (high > low) {
-			int mid = (high + low) / 2;
-			if (array[mid] > target) {
-				return binaryFind(array, target, low, mid - 1);
-			} else {
-				return binaryFind(array, target, mid + 1, high);
+	public static int binaryFind(int[] array, int target, int low, int high) {
+		if(low<high){
+			int mid=(low+high)/2;
+			if(array[mid]==target){
+				return mid;
 			}
-		} else {
-			if (array[low] > target) {
+			else if(array[mid]<target){
+				return binaryFind(array, target, mid+1, high);
+			}else{
+				return binaryFind(array, target, low, mid-1);
+			}
+		}else{
+			if(array[low]>=target){
 				return low;
-			} else {
-				return low + 1;
+			}else{
+				return low+1;
 			}
 		}
 	}

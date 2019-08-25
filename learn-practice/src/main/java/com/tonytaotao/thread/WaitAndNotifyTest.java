@@ -2,7 +2,7 @@ package com.tonytaotao.thread;
 
 import java.io.Serializable;
 
-public class ProductConsumerTest {
+public class WaitAndNotifyTest {
 	public static void main(String[] args) {
 		Bag bag=new Bag();
 		Thread consumer=new Thread(new Consumer(bag), "consumer");

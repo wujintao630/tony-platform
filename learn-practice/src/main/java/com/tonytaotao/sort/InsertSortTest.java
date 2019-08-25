@@ -4,15 +4,21 @@ package com.tonytaotao.sort;
  * 插入排序
  * @author tonytaotao
  */
-public class InsertSort {
+public class InsertSortTest {
+
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		new InsertSort().insertSort(array);
+
+		insertSort(array);
+
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
+
 	}
-	public void insertSort(int[] array) {
+
+	public static void insertSort(int[] array) {
 		if(array!=null&&array.length>1){
 			for(int i=1;i<array.length;i++){
 				int temp=array[i];

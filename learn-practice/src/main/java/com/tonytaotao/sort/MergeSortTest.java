@@ -5,17 +5,20 @@ package com.tonytaotao.sort;
  * @author tonytaotao
  * 
  */
-public class MergeSort {
+public class MergeSortTest {
 
 	public static void main(String[] args) {
+
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };
-		new MergeSort().mergeSort(array, 0, array.length-1);
+
+		mergeSort(array, 0, array.length-1);
+
 		for (int i = 0; i < array.length; i++) {
 			System.out.print(array[i] + ",");
 		}
 	}
 
-	public void mergeSort(int[] array, int low, int high) {
+	public static void mergeSort(int[] array, int low, int high) {
 		if(low<high){
 			int mid=(low+high)/2;
 			mergeSort(array, low, mid);
