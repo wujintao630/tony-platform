@@ -22,10 +22,18 @@ public class NioClient {
      * */
     private static ByteBuffer rBuffer = ByteBuffer.allocate(1024);
 
+
     private static Selector selector;
+
+    public static void main(String[] args) {
+
+        new NioClient().init();
+
+    }
 
     public  void init() {
         try {
+
             selector = Selector.open();
 
             SocketChannel socketChannel = SocketChannel.open();
@@ -36,7 +44,9 @@ public class NioClient {
             System.out.println("客户端启动成功");
 
             while (true) {
+
                 selector.select();
+
                 Set<SelectionKey> keySet = selector.selectedKeys();
                 for (final SelectionKey key: keySet) {
                     handle(key);
@@ -58,13 +68,6 @@ public class NioClient {
             if (client.isConnectionPending()) {
                 client.finishConnect();
                 System.out.println("客户端连接服务器成功");
-
-                sBuffer.clear();
-                sBuffer.put((new Date().toString() + "已连接！").getBytes());
-                sBuffer.flip();
-
-                client.write(sBuffer);
-
 
                 new Thread() {
                     @Override
@@ -99,32 +102,32 @@ public class NioClient {
 
         } else if (key.isReadable()) {
 
+
+            SocketChannel client = (SocketChannel) key.channel();
+
+            rBuffer.clear();
+
+            int readNum = 0;
             try {
-                SocketChannel client = (SocketChannel) key.channel();
-
-                rBuffer.clear();
-
-                int readNum = 0;
                 if ((readNum = client.read(rBuffer)) > 0) {
                     String receiveText = new String(rBuffer.array(), 0, readNum);
 
-                    System.out.println("客户端收到服务器消息：" + receiveText);
+                    System.out.println(receiveText);
 
                     client = (SocketChannel) key.channel();
                     client.register(selector, SelectionKey.OP_READ);
                 }
-
             } catch (IOException e) {
-                e.printStackTrace();
+
+                key.cancel();
+                client.socket().close();
+                client.close();
+
             }
 
+
+
         }
-
-    }
-
-    public static void main(String[] args) {
-
-        new NioClient().init();
 
     }
 }
