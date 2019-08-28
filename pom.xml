@@ -17,7 +17,7 @@
   <modules>
     <module>springcloud-platform</module>
     <module>bigdata-platform</module>
-    <module>dtscj-platform</module>
     <module>learn-practice</module>
+      <module>tony-rpc</module>
   </modules>
 </project>
