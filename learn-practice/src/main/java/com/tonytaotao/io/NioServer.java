@@ -8,26 +8,39 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class NioServer {
 
-    /**
-     * 接受数据缓冲区
-     * */
-    private static ByteBuffer sBuffer = ByteBuffer.allocate(1024);
-
-    /**
-     * 发送数据缓冲区
-     * */
-    private static ByteBuffer rBuffer = ByteBuffer.allocate(1024);
+    private static Selector selector;
 
     /**
      * 客户端列表
      * */
     private List<SocketChannel> clientList = new ArrayList<>();
 
-    private static Selector selector;
+    /**
+     * 是否读取包头
+     */
+    private boolean readHeadBoo = true;
+
+    /**
+     * 实际包体大小
+     * */
+    private int dataSize = 0;
+
+    /**
+     * 已读取包体大小
+     */
+    private int existSize = 0;
+
+    /**
+     * 缓存已读取包体数据
+     */
+    private ByteBuffer cacheBuffer = ByteBuffer.allocate(10);
+
 
     public static void main(String[] args) {
         new NioServer().init();
@@ -44,6 +57,7 @@ public class NioServer {
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
             System.out.println("服务器初始化完毕，开始接受客户端连接!");
+
 
             while (true) {
 
@@ -93,26 +107,104 @@ public class NioServer {
             broadCast(clientList, client, responseMsg, false);
 
         } else if (key.isValid() && key.isReadable()) {
-            SocketChannel client = (SocketChannel) key.channel();
 
-            rBuffer.clear();
+            SocketChannel client = (SocketChannel) key.channel();
 
             // 捕获客户端主动断开连接的异常
             try {
-                if (client.read(rBuffer) > 0) {
-                    rBuffer.flip();
 
-                    String receiveText = String.valueOf(Charset.forName("UTF-8").decode(rBuffer).array());
-                    System.out.println("服务器收到消息：" + receiveText);
+                if (readHeadBoo) { // 读取包头
+                    ByteBuffer headBuffer = ByteBuffer.allocate(4);
 
-                    String responseMsg = client.getRemoteAddress() + "说：" + receiveText;
-                    broadCast(clientList, client, responseMsg, true);
+                    client.read(headBuffer);
 
-                    System.out.println("服务器转发" +client.getRemoteAddress() +"的消息[" + receiveText + "]成功");
+                    if (!headBuffer.hasRemaining()) {  // headBuffer已经没有空位，证明已经读取了完整的包头
 
-                    client = (SocketChannel) key.channel();
-                    client.register(selector, SelectionKey.OP_READ);
+                        headBuffer.flip(); // 将数据写入channel
+
+                        dataSize = byteArrayToInt(headBuffer.array()); //计算实际包体大小
+
+                        System.out.println("服务器已收到客户端" + client.getRemoteAddress() +"的包头数据：" + dataSize);
+
+                        readHeadBoo = false;
+                        headBuffer.clear();
+
+                        client = (SocketChannel) key.channel();
+                        client.register(selector, SelectionKey.OP_READ);
+                    }
+
+                } else { // 读取包体
+
+                    ByteBuffer dataBuffer = ByteBuffer.allocate(10);
+
+                    if (client.read(dataBuffer) > 0) {
+
+                        dataBuffer.flip();
+
+                        int currentSize = dataBuffer.array().length;
+
+                        if (currentSize >= dataSize) { // 一次取出包体
+                            String receiveText = String.valueOf(Charset.forName("UTF-8").decode(dataBuffer).array());
+                            System.out.println("服务器已收到客户端" + client.getRemoteAddress() +"的包体数据：" + receiveText);
+
+                            String responseMsg = client.getRemoteAddress() + "说：" + receiveText;
+                            broadCast(clientList, client, responseMsg, true);
+
+                            System.out.println("服务器转发" +client.getRemoteAddress() +"的消息[" + receiveText + "]成功");
+
+                            readHeadBoo = true;
+                            dataSize = 0;
+
+                            client = (SocketChannel) key.channel();
+                            client.register(selector, SelectionKey.OP_READ);
+
+                        } else { // 多次取出包体
+
+                            existSize = existSize + currentSize;
+
+                            // 判断已取包体是否超出缓存大小
+                            if (existSize > cacheBuffer.capacity()) {
+                                ByteBuffer tempBuffer = cacheBuffer;
+
+                                cacheBuffer = ByteBuffer.allocate(tempBuffer.capacity() * 2);
+                                if (tempBuffer.position() > 0) {
+                                    tempBuffer.flip();
+                                    cacheBuffer.put(tempBuffer);
+                                }
+
+                            }
+
+                            cacheBuffer.put(dataBuffer);
+
+                            if (existSize >= dataSize) { // 最后一次取完包体
+                                cacheBuffer.flip();
+
+                                String receiveText = String.valueOf(Charset.forName("UTF-8").decode(cacheBuffer).array());
+                                System.out.println("服务器已收到客户端" + client.getRemoteAddress() +"的包体数据：" + receiveText);
+
+                                String responseMsg = client.getRemoteAddress() + "说：" + receiveText;
+                                broadCast(clientList, client, responseMsg, true);
+
+                                System.out.println("服务器转发" +client.getRemoteAddress() +"的消息[" + receiveText + "]成功");
+
+                                readHeadBoo = true;
+                                dataSize = 0;
+                                existSize = 0;
+                                cacheBuffer.clear();
+
+                                client = (SocketChannel) key.channel();
+                                client.register(selector, SelectionKey.OP_READ);
+
+                            } else { // 继续等待下一次取包体
+                                dataBuffer.clear();
+                            }
+
+                        }
+
+                    }
+
                 }
+
             } catch (IOException e) {
 
                 System.out.println(client.getRemoteAddress() + "已下线！");
@@ -140,8 +232,10 @@ public class NioServer {
      */
     private void sendMsg(SocketChannel client, String msg) throws IOException {
 
-        sBuffer.clear();
-        sBuffer.put(msg.getBytes());
+        byte[] bytes = msg.getBytes();
+
+        ByteBuffer sBuffer = ByteBuffer.allocate(bytes.length);
+        sBuffer.put(bytes);
         sBuffer.flip();
 
         client.write(sBuffer);
@@ -170,6 +264,20 @@ public class NioServer {
 
         }
 
+    }
+
+
+    private int  byteArrayToInt(byte[] bytes) {
+
+        //return bytes[3] & 0xFF | (bytes[2] & 0xFF) << 8 | (bytes[1] & 0xFF) << 16 | (bytes[0] & 0xFF) << 24;
+
+        int value = 0;
+        // 由高位到低位
+        for (int i = 0, length = bytes.length; i < length; i++) {
+            int shift = (length - 1 - i) * 8;
+            value += (bytes[i] & 0x000000FF) << shift;// 往高位游
+        }
+        return value;
     }
 
 

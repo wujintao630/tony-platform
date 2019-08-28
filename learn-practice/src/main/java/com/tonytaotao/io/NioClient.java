@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Date;
 import java.util.Set;
 
 public class NioClient {
@@ -80,6 +79,7 @@ public class NioClient {
                                 String sendText = br.readLine();
 
                                 sBuffer.clear();
+                                sBuffer.put(intToBytes(sendText.getBytes().length));
                                 sBuffer.put(sendText.getBytes());
                                 sBuffer.flip();
 
@@ -92,7 +92,7 @@ public class NioClient {
 
 
                         }
-                     }
+                    }
                 }.start();
 
             }
@@ -125,10 +125,23 @@ public class NioClient {
 
             }
 
-
-
         }
 
+    }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    public static byte[] intToBytes(int value) {
+        byte[] result = new byte[4];
+        // 由高位到低位
+        result[0] = (byte) ((value >> 24) & 0xFF);
+        result[1] = (byte) ((value >> 16) & 0xFF);
+        result[2] = (byte) ((value >> 8) & 0xFF);
+        result[3] = (byte) (value & 0xFF);
+        return result;
     }
 }
 
