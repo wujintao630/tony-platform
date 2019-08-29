@@ -1,59 +1,76 @@
 package com.tonytaotao.rpc.registry;
 
-import com.tonytaotao.rpc.core.NotifyListener;
-import com.tonytaotao.rpc.core.URL;
-import com.tonytaotao.rpc.utils.ConcurrentHashSet;
+import com.google.common.base.Preconditions;
+import com.tonytaotao.rpc.common.URL;
+import com.tonytaotao.rpc.util.ConcurrentHashSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractRegistry implements Registry{
+public abstract class AbstractRegistry implements Registry {
 
-    protected Set<URL> registeredServiceUrlSet = new ConcurrentHashSet<>();
+    protected Set<URL> registeredServiceUrls = new ConcurrentHashSet<URL>();
 
-    private URL registerUrl;
+    private URL registryUrl;
 
     public AbstractRegistry(URL url) {
-        this.registerUrl = url.clone0();
-    }
-
-    @Override
-    public void subscribe(URL url, NotifyListener notifyListener) throws Exception {
-        doSubscribe(url.clone0(), notifyListener);
-    }
-
-    @Override
-    public void unsubscribe(URL url, NotifyListener notifyListener) throws Exception {
-        doUnsubscribe(url.clone0(), notifyListener);
+        this.registryUrl = url.clone0();
     }
 
     @Override
     public void register(URL url) throws Exception {
+        Preconditions.checkNotNull(url);
         doRegister(url.clone0());
-        registeredServiceUrlSet.add(url);
+        registeredServiceUrls.add(url);
     }
 
     @Override
     public void unregister(URL url) throws Exception {
+        Preconditions.checkNotNull(url);
         doUnregister(url.clone0());
-        registeredServiceUrlSet.remove(url);
-
+        registeredServiceUrls.remove(url);
     }
 
     @Override
-    public URL getUrl() throws Exception {
-        return registerUrl;
+    public void subscribe(URL url, NotifyListener listener) {
+        Preconditions.checkNotNull(url);
+        Preconditions.checkNotNull(listener);
+
+        URL urlCopy = url.clone0();
+        doSubscribe(urlCopy, listener);
+
+        //第一次订阅时主动推一次
+//        List<URL> urls = doDiscover(urlCopy);
+//        if (urls != null && urls.size() > 0) {
+//            listener.notify(url, urls);
+//        }
+    }
+
+    @Override
+    public void unsubscribe(URL url, NotifyListener listener) {
+        Preconditions.checkNotNull(url);
+        Preconditions.checkNotNull(listener);
+        doUnsubscribe(url.clone0(), listener);
     }
 
     @Override
     public List<URL> discover(URL url) throws Exception {
-        List<URL> results = new ArrayList<>();
-        List<URL> urlDiscoveredList = doDiscover(url);
-        if (urlDiscoveredList != null) {
-            urlDiscoveredList.forEach(u -> results.add(u.clone0()));
+        Preconditions.checkNotNull(url);
+
+        List<URL> results = new ArrayList<URL>();
+        List<URL> urlsDiscovered = doDiscover(url);
+        if (urlsDiscovered != null) {
+            for (URL u : urlsDiscovered) {
+                results.add(u.clone0());
+            }
         }
         return results;
+    }
+
+    @Override
+    public URL getUrl() {
+        return registryUrl;
     }
 
     protected abstract void doRegister(URL url);

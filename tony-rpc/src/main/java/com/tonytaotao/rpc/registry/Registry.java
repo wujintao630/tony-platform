@@ -1,11 +1,10 @@
 package com.tonytaotao.rpc.registry;
 
-import com.tonytaotao.rpc.core.URL;
+import com.tonytaotao.rpc.common.URL;
 
-public interface Registry extends ServiceRegistry, ServiceDiscover{
+public interface Registry extends RegistryService, DiscoveryService {
 
-    URL getUrl() throws Exception;
+    URL getUrl();
 
-    void close() throws Exception;
-
+    void close();
 }
