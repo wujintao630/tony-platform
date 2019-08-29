@@ -8,7 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class KryoSerializer implements Serializer{
+public class KryoSerializer{
 
     private static final ThreadLocal<Kryo> THREAD_LOCAL = new ThreadLocal<Kryo>() {
         @Override
@@ -19,8 +19,8 @@ public class KryoSerializer implements Serializer{
         }
     };
 
-    @Override
-    public byte[] serialize(Object msg) throws IOException {
+
+    public static byte[] serialize(Object msg) throws IOException {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Output output = new Output(bos);
@@ -30,8 +30,7 @@ public class KryoSerializer implements Serializer{
 
     }
 
-    @Override
-    public <T> T deserialize(byte[] data, Class<T> clazz) throws IOException {
+    public static <T> T deserialize(byte[] data, Class<T> clazz) throws IOException {
 
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         Input input = new Input(bis);

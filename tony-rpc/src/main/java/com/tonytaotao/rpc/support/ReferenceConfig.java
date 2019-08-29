@@ -92,7 +92,7 @@ public class ReferenceConfig<T> extends XmlAbstractBeanConfig implements Factory
             throw new IllegalStateException("you need set registry config:" + interfaceClass.getName());
         }
 
-        this.proxy =
+        this.proxy = 
 
     }
 
