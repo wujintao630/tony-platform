@@ -34,4 +34,45 @@ public class URL {
         }
         return new URL(protocol, host, port, interfacePath, params);
     }
+
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getInterfacePath() {
+        return interfacePath;
+    }
+
+    public void setInterfacePath(String interfacePath) {
+        this.interfacePath = interfacePath;
+    }
+
+    public Map<String, String> getParamMap() {
+        return paramMap;
+    }
+
+    public void setParamMap(Map<String, String> paramMap) {
+        this.paramMap = paramMap;
+    }
 }
