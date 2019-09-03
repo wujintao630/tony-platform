@@ -1,4 +1,4 @@
-package com.tonytaotao.sort;
+package com.tonytaotao.base.sort;
 
 /**
  * 插入排序

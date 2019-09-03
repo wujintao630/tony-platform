@@ -1,4 +1,4 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.base.algorithm;
 
 /**
  * 汉诺塔

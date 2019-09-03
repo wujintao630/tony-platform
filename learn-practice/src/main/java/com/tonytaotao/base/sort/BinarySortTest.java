@@ -1,4 +1,4 @@
-package com.tonytaotao.sort;
+package com.tonytaotao.base.sort;
 
 public class BinarySortTest {
 	public static void main(String[] args) {
