@@ -1,7 +1,7 @@
 package com.tonytaotao.base.datastructure;
 
 /**
- * 二叉树  https://www.cnblogs.com/ysocean/p/8032642.html
+ * 二叉树
  */
 public class BinaryTreeTest {
 
@@ -20,7 +20,10 @@ public class BinaryTreeTest {
         binaryTree.insert(1);
         binaryTree.insert(3);
 
-        binaryTree.find(3).printNodeValue();
+        //binaryTree.find(3).printNodeValue();
+        binaryTree.preOrder(binaryTree.root);System.out.println();
+        binaryTree.infixOrder(binaryTree.root);System.out.println();
+        binaryTree.postOrder(binaryTree.root);System.out.println();
 
 
     }
@@ -87,6 +90,64 @@ public class BinaryTreeTest {
         return null;
     }
 
+    /**
+     * 找到最大值
+     */
+    public Node findMax() {
+        Node current = root;
+        Node maxNode = current;
+        while (current != null) {
+            maxNode = current;
+            current = current.getRcNode();
+        }
+        return maxNode;
+    }
+
+    /**
+     * 找到最小值
+     */
+    public Node findMin() {
+        Node current = root;
+        Node minNode = current;
+        while (current != null) {
+            minNode = current;
+            current = current.getLcNode();
+        }
+        return minNode;
+    }
+
+    /**
+     * 前序遍历
+     */
+    public void preOrder(Node current) {
+        if (current != null) {
+            System.out.print(current.getData() + " ");
+            preOrder(current.getLcNode());
+            preOrder(current.getRcNode());
+        }
+    }
+
+    /**
+     * 中序遍历
+     */
+    public void infixOrder(Node current) {
+        if (current != null) {
+            infixOrder(current.getLcNode());
+            System.out.print(current.getData() + " ");
+            infixOrder(current.getRcNode());
+        }
+    }
+
+    /**
+     * 后序遍历
+     */
+    public void postOrder(Node current) {
+        if (current != null) {
+            postOrder(current.getLcNode());
+            postOrder(current.getRcNode());
+            System.out.print(current.getData() + " ");
+        }
+    }
 
 
 
