@@ -1,7 +1,7 @@
 package com.tonytaotao.rpc.registry.zookeeper;
 
 import com.tonytaotao.rpc.common.URL;
-import com.tonytaotao.rpc.util.Constants;
+import com.tonytaotao.rpc.common.Constants;
 
 public class ZkUtils {
 

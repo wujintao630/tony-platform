@@ -3,22 +3,22 @@ package com.tonytaotao.rpc.cluster;
 
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.URLParam;
-import com.tonytaotao.rpc.core.DefaultResponse;
-import com.tonytaotao.rpc.core.Request;
-import com.tonytaotao.rpc.core.Response;
+import com.tonytaotao.rpc.core.response.DefaultResponse;
+import com.tonytaotao.rpc.core.request.Request;
+import com.tonytaotao.rpc.core.response.Response;
 import com.tonytaotao.rpc.core.extension.ExtensionLoader;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
-import com.tonytaotao.rpc.exception.RpcServiceException;
+import com.tonytaotao.rpc.exception.BusinessRpcException;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
+import com.tonytaotao.rpc.exception.ServiceRpcException;
 import com.tonytaotao.rpc.protocol.ProtocolFilterWrapper;
 import com.tonytaotao.rpc.registry.NotifyListener;
 import com.tonytaotao.rpc.registry.Registry;
-import com.tonytaotao.rpc.spi.RegistryFactory;
-import com.tonytaotao.rpc.spi.Protocol;
-import com.tonytaotao.rpc.rpc.Reference;
+import com.tonytaotao.rpc.core.reference.Reference;
 import com.tonytaotao.rpc.spi.HaStrategy;
 import com.tonytaotao.rpc.spi.LoadBalance;
-import com.tonytaotao.rpc.util.CollectionUtil;
-import com.tonytaotao.rpc.util.ExceptionUtil;
+import com.tonytaotao.rpc.protocol.Protocol;
+import com.tonytaotao.rpc.registry.RegistryFactory;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,11 +69,11 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
 
         logger.info("Cluster init over, url:{}, references size:{}", url, references!=null ? references.size():0);
         boolean check = Boolean.parseBoolean(url.getParameter(URLParam.check.getName(), URLParam.check.getValue()));
-        if(CollectionUtil.isEmpty(references)) {
+        if(CollectionUtils.isEmpty(references)) {
             logger.warn(String.format("Cluster No service urls for the reference:%s, registries:%s",
                     this.url, registryUrls));
             if(check) {
-                throw new RpcFrameworkException(String.format("Cluster No service urls for the reference:%s, registries:%s",
+                throw new FrameworkRpcException(String.format("Cluster No service urls for the reference:%s, registries:%s",
                         this.url, registryUrls));
             }
         }
@@ -126,13 +126,13 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
             try {
                 return haStrategy.call(request, loadBalance);
             } catch (Exception e) {
-                if (ExceptionUtil.isBizException(e)) {
+                if (e instanceof BusinessRpcException) {
                     throw (RuntimeException) e;
                 }
                 return buildErrorResponse(request, e);
             }
         }
-        return buildErrorResponse(request, new RpcServiceException("service not available"));
+        return buildErrorResponse(request, new ServiceRpcException("service not available"));
     }
 
     private Response buildErrorResponse(Request request, Exception motanException) {
@@ -164,7 +164,7 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
 
     @Override
     public synchronized void notify(URL registryUrl, List<URL> urls) {
-        if (CollectionUtil.isEmpty(urls)) {
+        if (CollectionUtils.isEmpty(urls)) {
             logger.warn("Cluster config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(),
                     url, urls);
             return;
@@ -216,7 +216,7 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
     private Registry getRegistry(URL registryUrl) {
         RegistryFactory registryFactory = ExtensionLoader.getExtensionLoader(RegistryFactory.class).getExtension(registryUrl.getProtocol());
         if (registryFactory == null) {
-            throw new RpcFrameworkException("register error! Could not find extension for registry protocol:" + registryUrl.getProtocol()
+            throw new FrameworkRpcException("register error! Could not find extension for registry protocol:" + registryUrl.getProtocol()
                     + ", make sure registry module for " + registryUrl.getProtocol() + " is in classpath!");
         }
         return registryFactory.getRegistry(registryUrl);

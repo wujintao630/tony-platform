@@ -1,7 +1,6 @@
 package com.tonytaotao.rpc.codec;
 
-import com.tonytaotao.rpc.spi.Codec;
-import com.tonytaotao.rpc.spi.Serializer;
+import com.tonytaotao.rpc.serializer.Serializer;
 
 import java.io.IOException;
 

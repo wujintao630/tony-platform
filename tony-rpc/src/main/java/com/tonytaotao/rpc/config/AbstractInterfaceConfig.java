@@ -3,11 +3,11 @@ package com.tonytaotao.rpc.config;
 
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.URLParam;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.registry.Registry;
-import com.tonytaotao.rpc.util.Constants;
+import com.tonytaotao.rpc.common.Constants;
 import com.tonytaotao.rpc.util.NetUtils;
-import com.tonytaotao.rpc.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.util.*;
@@ -89,7 +89,7 @@ public class AbstractInterfaceConfig extends AbstractConfig {
     protected String getLocalHostAddress() {
         InetAddress address = NetUtils.getLocalAddress();
         if(address==null || StringUtils.isBlank(address.getHostAddress())){
-            throw new RpcFrameworkException("retrieve local host address failure. Please config <tonyrpc:protocol host='...' />");
+            throw new FrameworkRpcException("retrieve local host address failure. Please config <tonyrpc:protocol host='...' />");
         }
         return address.getHostAddress();
     }

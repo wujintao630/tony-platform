@@ -1,15 +1,14 @@
 package com.tonytaotao.rpc.protocol;
 
 import com.tonytaotao.rpc.common.URL;
-import com.tonytaotao.rpc.core.Request;
-import com.tonytaotao.rpc.core.Response;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
+import com.tonytaotao.rpc.core.request.Request;
+import com.tonytaotao.rpc.core.response.Response;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.filter.Filter;
-import com.tonytaotao.rpc.rpc.Exporter;
-import com.tonytaotao.rpc.rpc.Reference;
-import com.tonytaotao.rpc.spi.Protocol;
-import com.tonytaotao.rpc.rpc.Provider;
-import com.tonytaotao.rpc.util.Constants;
+import com.tonytaotao.rpc.core.exporter.Exporter;
+import com.tonytaotao.rpc.core.reference.Reference;
+import com.tonytaotao.rpc.core.provider.Provider;
+import com.tonytaotao.rpc.common.Constants;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class ProtocolFilterWrapper implements Protocol {
 
     public ProtocolFilterWrapper(Protocol protocol) {
         if (protocol == null) {
-            throw new RpcFrameworkException("Protocol is null when construct "+this.getClass().getName());
+            throw new FrameworkRpcException("Protocol is null when construct "+this.getClass().getName());
         }
         this.protocol = protocol;
     }

@@ -5,9 +5,9 @@ import com.tonytaotao.rpc.cluster.Cluster;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.URLParam;
 import com.tonytaotao.rpc.core.extension.ExtensionLoader;
-import com.tonytaotao.rpc.spi.ConfigHandler;
-import com.tonytaotao.rpc.util.Constants;
-import com.tonytaotao.rpc.util.StringUtils;
+import com.tonytaotao.rpc.core.ConfigHandler;
+import com.tonytaotao.rpc.common.Constants;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

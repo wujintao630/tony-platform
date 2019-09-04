@@ -2,15 +2,16 @@ package com.tonytaotao.rpc.registry;
 
 import com.google.common.base.Preconditions;
 import com.tonytaotao.rpc.common.URL;
-import com.tonytaotao.rpc.util.ConcurrentHashSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractRegistry implements Registry {
 
-    protected Set<URL> registeredServiceUrls = new ConcurrentHashSet<URL>();
+    protected Set<URL> registeredServiceUrls = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private URL registryUrl;
 

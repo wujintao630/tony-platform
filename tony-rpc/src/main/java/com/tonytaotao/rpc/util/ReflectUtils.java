@@ -1,53 +1,21 @@
 package com.tonytaotao.rpc.util;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.lang.reflect.Field;
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class ReflectUtils {
 
     private static final String SETTER_PREFIX = "set";
-    private static final String GETTER_PREFIX = "get";
-    private static final String IS_PREFIX = "is";
-
-    public static Field getField(Class<?> clazz, String fieldName){
-        for (Class<?> searchType = clazz; searchType != Object.class; searchType = searchType.getSuperclass()) {
-            try {
-                Field field =  searchType.getDeclaredField(fieldName);
-                field.setAccessible(true);
-                return field;
-            } catch (NoSuchFieldException e) {
-                //not handler
-            }
-        }
-        return null;
-    }
 
     public static Method getWriteMethod(Class<?> clazz, String propertyName, Class<?> parameterType) {
         String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(propertyName);
         return getAccessibleMethod(clazz, setterMethodName, parameterType);
     }
 
-    /**
-     * 按属性名获取前缀为get或is的方法，并设为可访问
-     */
-    public static Method getReadMethod(Class<?> clazz, String propertyName) {
-        String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(propertyName);
 
-        Method method = getAccessibleMethod(clazz, getterMethodName);
-        // retry on another name
-        if (method == null) {
-            getterMethodName = IS_PREFIX + StringUtils.capitalize(propertyName);
-            method = getAccessibleMethod(clazz, getterMethodName);
-        }
-        return method;
-    }
-
-    public static Method getAccessibleMethod(final Class<?> clazz, final String methodName,
-                                             Class<?>... parameterTypes) {
+    public static Method getAccessibleMethod(final Class<?> clazz, final String methodName, Class<?>... parameterTypes) {
 
         // 处理原子类型与对象类型的兼容
         ClassUtils.wrapClasses(parameterTypes);
@@ -65,18 +33,6 @@ public class ReflectUtils {
             }
         }
         return null;
-    }
-
-    public static Method[] getMethods(final Class<?> cls){
-        return cls.getMethods();
-    }
-
-    public static Method[] getDeclaredMethods(final Class<?> cls){
-        return cls.getDeclaredMethods();
-    }
-
-    public static BeanInfo getBeanInfo(final Class<?> cls) throws IntrospectionException {
-        return Introspector.getBeanInfo(cls);
     }
 
 }

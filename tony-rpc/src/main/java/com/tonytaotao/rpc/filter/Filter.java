@@ -1,9 +1,9 @@
 package com.tonytaotao.rpc.filter;
 
-import com.tonytaotao.rpc.core.Request;
-import com.tonytaotao.rpc.core.Response;
+import com.tonytaotao.rpc.core.request.Request;
+import com.tonytaotao.rpc.core.response.Response;
 import com.tonytaotao.rpc.core.extension.SPI;
-import com.tonytaotao.rpc.rpc.Caller;
+import com.tonytaotao.rpc.core.Caller;
 
 @SPI
 public interface Filter {

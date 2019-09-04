@@ -2,8 +2,8 @@ package com.tonytaotao.rpc.cluster;
 
 import com.tonytaotao.rpc.core.extension.SPI;
 import com.tonytaotao.rpc.core.extension.Scope;
-import com.tonytaotao.rpc.rpc.Caller;
-import com.tonytaotao.rpc.rpc.Reference;
+import com.tonytaotao.rpc.core.Caller;
+import com.tonytaotao.rpc.core.reference.Reference;
 import com.tonytaotao.rpc.spi.HaStrategy;
 import com.tonytaotao.rpc.spi.LoadBalance;
 

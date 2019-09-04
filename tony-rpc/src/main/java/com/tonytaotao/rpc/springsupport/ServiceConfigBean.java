@@ -3,8 +3,8 @@ package com.tonytaotao.rpc.springsupport;
 import com.tonytaotao.rpc.config.ProtocolConfig;
 import com.tonytaotao.rpc.config.RegistryConfig;
 import com.tonytaotao.rpc.config.ServiceConfig;
-import com.tonytaotao.rpc.util.CollectionUtil;
 import com.tonytaotao.rpc.util.FrameworkUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -51,7 +51,7 @@ public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactor
     }
 
     private void checkRegistryConfig() {
-        if (CollectionUtil.isEmpty(getRegistries())) {
+        if (CollectionUtils.isEmpty(getRegistries())) {
             for (String name : XmlNamespaceHandler.registryDefineNames) {
                 RegistryConfig rc = beanFactory.getBean(name, RegistryConfig.class);
                 if (rc == null) {
@@ -64,13 +64,13 @@ public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactor
                 }
             }
         }
-        if (CollectionUtil.isEmpty(getRegistries())) {
+        if (CollectionUtils.isEmpty(getRegistries())) {
             setRegistry(FrameworkUtils.getDefaultRegistryConfig());
         }
     }
 
     private void checkProtocolConfig() {
-        if (CollectionUtil.isEmpty(getProtocols())) {
+        if (CollectionUtils.isEmpty(getProtocols())) {
             for (String name : XmlNamespaceHandler.protocolDefineNames) {
                 ProtocolConfig pc = beanFactory.getBean(name, ProtocolConfig.class);
                 if (pc == null) {
@@ -83,7 +83,7 @@ public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactor
                 }
             }
         }
-        if (CollectionUtil.isEmpty(getProtocols())) {
+        if (CollectionUtils.isEmpty(getProtocols())) {
             setProtocol(FrameworkUtils.getDefaultProtocolConfig());
         }
     }

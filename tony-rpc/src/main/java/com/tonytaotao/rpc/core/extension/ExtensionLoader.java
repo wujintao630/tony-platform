@@ -2,7 +2,7 @@ package com.tonytaotao.rpc.core.extension;
 
 import com.tonytaotao.rpc.util.ClassUtils;
 import com.tonytaotao.rpc.util.ReflectUtils;
-import com.tonytaotao.rpc.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import java.beans.IntrospectionException;
@@ -273,12 +273,14 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> getExtensionClass(String name) {
-        if (name == null)
+        if (name == null) {
             throw new IllegalArgumentException("Extension name == null");
+        }
 
         Class<?> clazz = extensionClasses.get(name);
-        if (clazz == null)
+        if (clazz == null) {
             throw new IllegalArgumentException("not find extension with name:"+name);
+        }
         return clazz;
     }
 

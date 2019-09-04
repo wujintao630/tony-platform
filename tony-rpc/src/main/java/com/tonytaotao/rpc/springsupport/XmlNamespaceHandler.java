@@ -3,17 +3,18 @@ package com.tonytaotao.rpc.springsupport;
 import com.tonytaotao.rpc.config.ApplicationConfig;
 import com.tonytaotao.rpc.config.ProtocolConfig;
 import com.tonytaotao.rpc.config.RegistryConfig;
-import com.tonytaotao.rpc.util.ConcurrentHashSet;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class XmlNamespaceHandler extends NamespaceHandlerSupport {
-    public final static Set<String> protocolDefineNames = new ConcurrentHashSet<String>();
-    public final static Set<String> registryDefineNames = new ConcurrentHashSet<String>();
-    public final static Set<String> serviceConfigDefineNames = new ConcurrentHashSet<String>();
-    public final static Set<String> referenceConfigDefineNames = new ConcurrentHashSet<String>();
-    public final static Set<String> applicationConfigDefineNames = new ConcurrentHashSet<String>();
+    public final static Set<String> protocolDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public final static Set<String> registryDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public final static Set<String> serviceConfigDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public final static Set<String> referenceConfigDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public final static Set<String> applicationConfigDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
     public void init() {

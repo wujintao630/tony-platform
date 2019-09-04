@@ -1,8 +1,7 @@
 package com.tonytaotao.rpc.registry;
 
 import com.tonytaotao.rpc.common.URL;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
-import com.tonytaotao.rpc.spi.RegistryFactory;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,12 +22,12 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
             }
             registry = createRegistry(url);
             if (registry == null) {
-                throw new RpcFrameworkException("Create registry false for url:" + url);
+                throw new FrameworkRpcException("Create registry false for url:" + url);
             }
             registries.put(registryUri, registry);
             return registry;
         } catch (Exception e) {
-            throw new RpcFrameworkException("Create registry false for url:" + url, e);
+            throw new FrameworkRpcException("Create registry false for url:" + url, e);
         } finally {
             lock.unlock();
         }

@@ -1,8 +1,7 @@
 package com.tonytaotao.rpc.common;
 
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
-import com.tonytaotao.rpc.util.Constants;
-import com.tonytaotao.rpc.util.StringUtils;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class URL {
     private Map<String, String> parameters;
 
     public URL(String protocol, String host, int port, String path) {
-        this(protocol, host, port, path, new HashMap<String, String>());
+        this(protocol, host, port, path, new HashMap<>());
     }
 
     public URL(String protocol, String host, int port, String path, Map<String, String> parameters) {
@@ -100,19 +99,6 @@ public class URL {
         return Integer.parseInt(value);
     }
 
-    public void addParameter(String name, String value) {
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(value)) {
-            return;
-        }
-        parameters.put(name, value);
-    }
-
-    public void removeParameter(String name) {
-        if (name != null) {
-            parameters.remove(name);
-        }
-    }
-
     public boolean canServe(URL refUrl) {
         if (refUrl == null || !this.getPath().equals(refUrl.getPath())) {
             return false;
@@ -138,7 +124,7 @@ public class URL {
 
     public static URL parse(String url) {
         if (StringUtils.isBlank(url)) {
-            throw new RpcFrameworkException("url is empty");
+            throw new FrameworkRpcException("url is empty");
         }
         String protocol = null;
         String host = null;

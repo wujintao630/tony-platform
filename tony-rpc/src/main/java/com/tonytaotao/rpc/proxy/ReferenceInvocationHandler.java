@@ -2,13 +2,13 @@ package com.tonytaotao.rpc.proxy;
 
 import com.tonytaotao.rpc.cluster.Cluster;
 import com.tonytaotao.rpc.common.URLParam;
-import com.tonytaotao.rpc.core.DefaultRequest;
-import com.tonytaotao.rpc.core.Response;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
-import com.tonytaotao.rpc.exception.RpcServiceException;
-import com.tonytaotao.rpc.util.Constants;
-import com.tonytaotao.rpc.util.ExceptionUtil;
-import com.tonytaotao.rpc.util.RequestIdGenerator;
+import com.tonytaotao.rpc.core.request.DefaultRequest;
+import com.tonytaotao.rpc.core.response.Response;
+import com.tonytaotao.rpc.exception.BusinessRpcException;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
+import com.tonytaotao.rpc.exception.ServiceRpcException;
+import com.tonytaotao.rpc.common.Constants;
+import com.tonytaotao.rpc.util.IdGeneratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +36,11 @@ public class ReferenceInvocationHandler<T> implements InvocationHandler {
             if ("toString".equals(method.getName())) {
                 return "";
             }
-            throw new RpcFrameworkException("can not invoke local method:" + method.getName());
+            throw new FrameworkRpcException("can not invoke local method:" + method.getName());
         }
 
         DefaultRequest request = new DefaultRequest();
-        request.setRequestId(RequestIdGenerator.getRequestId());
+        request.setRequestId(IdGeneratorUtils.getRequestId());
         request.setInterfaceName(method.getDeclaringClass().getName());
         request.setMethodName(method.getName());
         request.setParameterTypes(method.getParameterTypes());
@@ -58,7 +58,7 @@ public class ReferenceInvocationHandler<T> implements InvocationHandler {
                 Response resp = cluster.call(request);
                 return getValue(resp);
             } catch (RuntimeException e) {
-                if (ExceptionUtil.isBizException(e)) {
+                if (e instanceof BusinessRpcException) {
                     Throwable t = e.getCause();
                     if (t != null && t instanceof Exception) {
                         throw t;
@@ -66,7 +66,7 @@ public class ReferenceInvocationHandler<T> implements InvocationHandler {
                         String msg =
                                 t == null ? "biz exception cause is null" : ("biz exception cause is throwable error:" + t.getClass()
                                         + ", errmsg:" + t.getMessage());
-                        throw new RpcServiceException(msg);
+                        throw new ServiceRpcException(msg);
                     }
                 } else if (!throwException) {
                     logger.warn(this.getClass().getSimpleName()+" invoke false, so return default value: uri=" + cluster.getUrl().getUri(), e);
@@ -77,7 +77,7 @@ public class ReferenceInvocationHandler<T> implements InvocationHandler {
                 }
             }
         }
-        throw new RpcServiceException("Reference call Error: cluster not exist, interface=" + clz.getName());
+        throw new ServiceRpcException("Reference call Error: cluster not exist, interface=" + clz.getName());
     }
 
     private boolean checkMethodExceptionSignature(Method method) {
@@ -88,7 +88,7 @@ public class ReferenceInvocationHandler<T> implements InvocationHandler {
     public Object getValue(Response resp) {
         Exception exception = resp.getException();
         if (exception != null) {
-            throw (exception instanceof RuntimeException) ? (RuntimeException) exception : new RpcFrameworkException(
+            throw (exception instanceof RuntimeException) ? (RuntimeException) exception : new FrameworkRpcException(
                     exception.getMessage(), exception);
         }
         return resp.getResult();

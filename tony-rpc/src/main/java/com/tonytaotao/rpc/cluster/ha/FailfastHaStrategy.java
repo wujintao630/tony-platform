@@ -3,9 +3,9 @@ package com.tonytaotao.rpc.cluster.ha;
 
 import com.tonytaotao.rpc.spi.HaStrategy;
 import com.tonytaotao.rpc.spi.LoadBalance;
-import com.tonytaotao.rpc.core.Request;
-import com.tonytaotao.rpc.core.Response;
-import com.tonytaotao.rpc.rpc.Reference;
+import com.tonytaotao.rpc.core.request.Request;
+import com.tonytaotao.rpc.core.response.Response;
+import com.tonytaotao.rpc.core.reference.Reference;
 
 public class FailfastHaStrategy<T> implements HaStrategy<T> {
 

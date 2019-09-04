@@ -1,8 +1,8 @@
 package com.tonytaotao.rpc.cluster.loadbalance;
 
 import com.tonytaotao.rpc.spi.LoadBalance;
-import com.tonytaotao.rpc.core.Request;
-import com.tonytaotao.rpc.rpc.Reference;
+import com.tonytaotao.rpc.core.request.Request;
+import com.tonytaotao.rpc.core.reference.Reference;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

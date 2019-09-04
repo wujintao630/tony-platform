@@ -8,9 +8,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
- * @author Ricky Fung
- */
 public class NetUtils {
     private static final Logger logger = LoggerFactory.getLogger(NetUtils.class);
 
@@ -20,15 +17,9 @@ public class NetUtils {
 
     private static volatile InetAddress LOCAL_ADDRESS = null;
 
-    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^\\d{1,3}(\\.\\d{1,3}){3}\\:\\d{1,5}$");
-
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
 
-    public static InetSocketAddress parseSocketAddress(final String addr) {
-        String[] arr = addr.split(":");
-        InetSocketAddress isa = new InetSocketAddress(arr[0], Integer.parseInt(arr[1]));
-        return isa;
-    }
+
 
     public static InetAddress getLocalAddress() {
         return getLocalAddress(null);
@@ -121,10 +112,6 @@ public class NetUtils {
             logger.warn("Failed to retriving ip address, " + e.getMessage(), e);
         }
         return null;
-    }
-
-    public static boolean isValidAddress(String address) {
-        return ADDRESS_PATTERN.matcher(address).matches();
     }
 
     public static boolean isValidAddress(InetAddress address) {

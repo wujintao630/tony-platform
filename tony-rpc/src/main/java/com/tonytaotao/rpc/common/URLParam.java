@@ -1,8 +1,6 @@
 package com.tonytaotao.rpc.common;
 
 
-import com.tonytaotao.rpc.util.Constants;
-
 public enum URLParam {
 
     application("application", ""),

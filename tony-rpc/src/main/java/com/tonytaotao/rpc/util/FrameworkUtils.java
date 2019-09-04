@@ -1,10 +1,11 @@
 package com.tonytaotao.rpc.util;
 
+import com.tonytaotao.rpc.common.Constants;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.URLParam;
 import com.tonytaotao.rpc.config.ProtocolConfig;
 import com.tonytaotao.rpc.config.RegistryConfig;
-import com.tonytaotao.rpc.core.Request;
+import com.tonytaotao.rpc.core.request.Request;
 
 public class FrameworkUtils {
 

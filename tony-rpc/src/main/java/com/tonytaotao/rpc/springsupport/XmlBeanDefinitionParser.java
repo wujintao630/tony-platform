@@ -3,7 +3,7 @@ package com.tonytaotao.rpc.springsupport;
 import com.tonytaotao.rpc.config.ApplicationConfig;
 import com.tonytaotao.rpc.config.ProtocolConfig;
 import com.tonytaotao.rpc.config.RegistryConfig;
-import com.tonytaotao.rpc.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.ManagedList;

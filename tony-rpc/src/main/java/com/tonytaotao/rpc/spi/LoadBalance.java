@@ -1,10 +1,10 @@
 package com.tonytaotao.rpc.spi;
 
 
-import com.tonytaotao.rpc.core.Request;
+import com.tonytaotao.rpc.core.request.Request;
 import com.tonytaotao.rpc.core.extension.SPI;
 import com.tonytaotao.rpc.core.extension.Scope;
-import com.tonytaotao.rpc.rpc.Reference;
+import com.tonytaotao.rpc.core.reference.Reference;
 
 import java.util.List;
 

@@ -5,10 +5,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.URLParam;
 import com.tonytaotao.rpc.core.extension.ExtensionLoader;
-import com.tonytaotao.rpc.spi.ConfigHandler;
-import com.tonytaotao.rpc.rpc.Exporter;
-import com.tonytaotao.rpc.util.Constants;
-import com.tonytaotao.rpc.util.StringUtils;
+import com.tonytaotao.rpc.core.exporter.Exporter;
+import com.tonytaotao.rpc.core.ConfigHandler;
+import com.tonytaotao.rpc.common.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

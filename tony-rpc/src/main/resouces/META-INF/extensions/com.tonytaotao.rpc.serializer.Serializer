@@ -1,0 +1,2 @@
+protostuff=com.tonytaotao.rpc.Serializer.protostuff.ProtostuffSerializer
+kryo=com.tonytaotao.rpc.Serializer.kryo.KryoSerializer

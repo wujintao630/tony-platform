@@ -1,10 +1,10 @@
 package com.tonytaotao.rpc.registry.zookeeper;
 
 import com.tonytaotao.rpc.common.URL;
-import com.tonytaotao.rpc.exception.RpcFrameworkException;
+import com.tonytaotao.rpc.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.registry.AbstractRegistry;
 import com.tonytaotao.rpc.registry.NotifyListener;
-import com.tonytaotao.rpc.util.Constants;
+import com.tonytaotao.rpc.common.Constants;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
@@ -58,7 +58,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
             removeNode(url, ZkNodeType.SERVER);
             createNode(url, ZkNodeType.SERVER);
         } catch (Throwable e) {
-            throw new RpcFrameworkException(String.format("Failed to register %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
+            throw new FrameworkRpcException(String.format("Failed to register %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
             serverLock.unlock();
         }
@@ -70,7 +70,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
             serverLock.lock();
             removeNode(url, ZkNodeType.SERVER);
         } catch (Throwable e) {
-            throw new RpcFrameworkException(String.format("Failed to unregister %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
+            throw new FrameworkRpcException(String.format("Failed to unregister %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
             serverLock.unlock();
         }
@@ -107,7 +107,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
             zkClient.subscribeChildChanges(serverTypePath, zkChildListener);
             logger.info(String.format("[ZookeeperRegistry] subscribe service: path=%s, info=%s", ZkUtils.toNodePath(url, ZkNodeType.SERVER), url.toFullUri()));
         } catch (Throwable e) {
-            throw new RpcFrameworkException(String.format("Failed to subscribe %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
+            throw new FrameworkRpcException(String.format("Failed to subscribe %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
             clientLock.unlock();
         }
@@ -126,7 +126,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
                 }
             }
         } catch (Throwable e) {
-            throw new RpcFrameworkException(String.format("Failed to unsubscribe service %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
+            throw new FrameworkRpcException(String.format("Failed to unsubscribe service %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
             clientLock.unlock();
         }
@@ -161,7 +161,7 @@ public class ZookeeperRegistry extends AbstractRegistry {
             }
             return childrenNodeToUrls(parentPath, children);
         } catch (Throwable e) {
-            throw new RpcFrameworkException(String.format("Failed to discover service %s from zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
+            throw new FrameworkRpcException(String.format("Failed to discover service %s from zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         }
     }
 
