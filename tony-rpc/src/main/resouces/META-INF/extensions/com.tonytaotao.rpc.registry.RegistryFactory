@@ -1,1 +1,0 @@
-zookeeper=com.tonytaotao.rpc.registry.zookeeper.ZookeeperRegistryFactory
