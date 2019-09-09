@@ -1,6 +1,6 @@
 package com.tonytaotao.rpc.netty;
 
-public enum ChannelState {
+public enum ChannelStateEnum {
 
     /** 未初始化状态 **/
     NEW(0),
@@ -15,7 +15,7 @@ public enum ChannelState {
 
     public final int value;
 
-    ChannelState(int value) {
+    ChannelStateEnum(int value) {
         this.value = value;
     }
 

@@ -9,7 +9,7 @@ import com.tonytaotao.rpc.core.response.future.DefaultResponseFuture;
 import com.tonytaotao.rpc.core.response.future.ResponseFuture;
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.common.exception.TransportRpcException;
-import com.tonytaotao.rpc.netty.ChannelState;
+import com.tonytaotao.rpc.netty.ChannelStateEnum;
 import com.tonytaotao.rpc.netty.ChannelWrapper;
 import com.tonytaotao.rpc.netty.NettyDecoder;
 import com.tonytaotao.rpc.netty.NettyEncoder;
@@ -38,8 +38,7 @@ public class NettyClientImpl extends AbstractClient {
     private EventLoopGroup group = new NioEventLoopGroup();
     private Bootstrap b = new Bootstrap();
 
-    private final ConcurrentHashMap<Long, ResponseFuture> responseFutureMap =
-            new ConcurrentHashMap<>(256);
+    private final ConcurrentHashMap<Long, ResponseFuture> responseFutureMap = new ConcurrentHashMap<>(256);
 
     private ScheduledExecutorService scheduledExecutorService;
     private int timeout;
@@ -106,7 +105,7 @@ public class NettyClientImpl extends AbstractClient {
             throw new FrameworkRpcException(String.format("NettyClient connect to address:%s failure"), e);
         }
 
-        state = ChannelState.AVAILABLE;
+        state = ChannelStateEnum.AVAILABLE;
         return true;
     }
 
@@ -213,7 +212,7 @@ public class NettyClientImpl extends AbstractClient {
             this.scheduledExecutorService.shutdown();
             this.group.shutdownGracefully();
 
-            state = ChannelState.CLOSED;
+            state = ChannelStateEnum.CLOSED;
         } catch (Exception e) {
             logger.error("NettyClient close Error: url=" + url.getUri(), e);
         }

@@ -1,12 +1,12 @@
 package com.tonytaotao.rpc.registry.zookeeper;
 
-public enum ZkNodeType {
+public enum ZkNodeTypeEnum {
     SERVER("providers"),
     CLIENT("consumers");
 
     private String value;
 
-    ZkNodeType(String value){
+    ZkNodeTypeEnum(String value){
         this.value = value;
     }
 

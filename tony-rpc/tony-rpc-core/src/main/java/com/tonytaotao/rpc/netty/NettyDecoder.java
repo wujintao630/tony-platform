@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NettyDecoder extends LengthFieldBasedFrameDecoder {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NettyDecoder.class);
 
     private int maxFrameLength;
     private Codec codec;
@@ -55,10 +55,8 @@ public class NettyDecoder extends LengthFieldBasedFrameDecoder {
         }
 
         if (maxFrameLength > 0 && dataLength > maxFrameLength) {
-            logger.warn(
-                    "NettyDecoder transport data content length over of limit, size: {}  > {}. remote={} local={}",
-                    dataLength, maxFrameLength, ctx.channel().remoteAddress(), ctx.channel()
-                            .localAddress());
+            logger.warn("NettyDecoder transport data content length over of limit, size: {}  > {}. remote={} local={}",
+                    dataLength, maxFrameLength, ctx.channel().remoteAddress(), ctx.channel().localAddress());
             Exception e = new FrameworkRpcException("NettyDecoder transport data content length over of limit, size: "
                     + dataLength + " > " + maxFrameLength);
 

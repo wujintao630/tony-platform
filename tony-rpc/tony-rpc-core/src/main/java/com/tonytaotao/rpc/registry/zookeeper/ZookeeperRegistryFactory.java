@@ -107,8 +107,8 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
         try {
             serverLock.lock();
             // 防止旧节点未正常注销
-            removeNode(url, ZkNodeType.SERVER);
-            createNode(url, ZkNodeType.SERVER);
+            removeNode(url, ZkNodeTypeEnum.SERVER);
+            createNode(url, ZkNodeTypeEnum.SERVER);
         } catch (Throwable e) {
             throw new FrameworkRpcException(String.format("Failed to register %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
@@ -119,7 +119,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
     private void doUnregister(URL url) {
         try {
             serverLock.lock();
-            removeNode(url, ZkNodeType.SERVER);
+            removeNode(url, ZkNodeTypeEnum.SERVER);
         } catch (Throwable e) {
             throw new FrameworkRpcException(String.format("Failed to unregister %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
@@ -150,12 +150,12 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
             }
 
             // 防止旧节点未正常注销
-            removeNode(url, ZkNodeType.CLIENT);
-            createNode(url, ZkNodeType.CLIENT);
+            removeNode(url, ZkNodeTypeEnum.CLIENT);
+            createNode(url, ZkNodeTypeEnum.CLIENT);
 
-            String serverTypePath = ZkUtils.toNodeTypePath(url, ZkNodeType.SERVER);
+            String serverTypePath = ZkUtils.toNodeTypePath(url, ZkNodeTypeEnum.SERVER);
             zkClient.subscribeChildChanges(serverTypePath, zkChildListener);
-            logger.info(String.format("[ZookeeperRegistryFactory] subscribe service: path=%s, info=%s", ZkUtils.toNodePath(url, ZkNodeType.SERVER), url.getUriWithParam()));
+            logger.info(String.format("[ZookeeperRegistryFactory] subscribe service: path=%s, info=%s", ZkUtils.toNodePath(url, ZkNodeTypeEnum.SERVER), url.getUriWithParam()));
         } catch (Throwable e) {
             throw new FrameworkRpcException(String.format("Failed to subscribe %s to zookeeper(%s), cause: %s", url, getUrl(), e.getMessage()), e);
         } finally {
@@ -170,7 +170,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
             if (childChangeListeners != null) {
                 IZkChildListener zkChildListener = childChangeListeners.get(listener);
                 if (zkChildListener != null) {
-                    zkClient.unsubscribeChildChanges(ZkUtils.toNodeTypePath(url, ZkNodeType.CLIENT), zkChildListener);
+                    zkClient.unsubscribeChildChanges(ZkUtils.toNodeTypePath(url, ZkNodeTypeEnum.CLIENT), zkChildListener);
                     childChangeListeners.remove(listener);
                 }
             }
@@ -185,7 +185,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
         return discoverService(url);
     }
 
-    private void createNode(URL url, ZkNodeType nodeType) {
+    private void createNode(URL url, ZkNodeTypeEnum nodeType) {
         String nodeTypePath = ZkUtils.toNodeTypePath(url, nodeType);
         if (!zkClient.exists(nodeTypePath)) {
             zkClient.createPersistent(nodeTypePath, true);
@@ -193,7 +193,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
         zkClient.createEphemeral(ZkUtils.toNodePath(url, nodeType), url.getUriWithParam());
     }
 
-    private void removeNode(URL url, ZkNodeType nodeType) {
+    private void removeNode(URL url, ZkNodeTypeEnum nodeType) {
         String nodePath = ZkUtils.toNodePath(url, nodeType);
         if (zkClient.exists(nodePath)) {
             zkClient.delete(nodePath);
@@ -202,7 +202,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
 
     private List<URL> discoverService(URL url) {
         try {
-            String parentPath = ZkUtils.toNodeTypePath(url, ZkNodeType.SERVER);
+            String parentPath = ZkUtils.toNodeTypePath(url, ZkNodeTypeEnum.SERVER);
             List<String> children = new ArrayList<String>();
             if (zkClient.exists(parentPath)) {
                 children = zkClient.getChildren(parentPath);
@@ -214,7 +214,7 @@ public class ZookeeperRegistryFactory implements ServiceCommon {
     }
 
     private List<URL> childrenNodeToUrls(String parentPath, List<String> children) {
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         if (children != null) {
             for (String node : children) {
                 String nodePath = parentPath + Constants.PATH_SEPARATOR + node;

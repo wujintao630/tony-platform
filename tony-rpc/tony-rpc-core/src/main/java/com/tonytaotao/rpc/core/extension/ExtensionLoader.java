@@ -29,28 +29,28 @@ public class ExtensionLoader<T> {
 
     private ClassLoader classLoader;
 
-    private Class<T> type;
+    private Class<T> clazz;
 
-    private String defaultExtName;
+    private String defaultExtensionName;
 
-    private ExtensionLoader(Class<T> type){
-        this(type, ClassUtils.getClassLoader(type));
+    private ExtensionLoader(Class<T> clazz){
+        this(clazz, ClassUtils.getClassLoader(clazz));
     }
 
-    private ExtensionLoader(Class<T> type, ClassLoader classLoader){
-        this.type = type;
+    private ExtensionLoader(Class<T> clazz, ClassLoader classLoader){
+        this.clazz = clazz;
         this.classLoader = classLoader;
-        this.defaultExtName = type.getAnnotation(SPI.class).value();
+        this.defaultExtensionName = clazz.getAnnotation(SPI.class).value();
     }
 
-    public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
+    public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz) {
 
-        checkInterfaceType(type);
+        checkInterfaceType(clazz);
 
-        ExtensionLoader<T> loader = (ExtensionLoader<T>) EXTENSION_LOADERS.get(type);
+        ExtensionLoader<T> loader = (ExtensionLoader<T>) EXTENSION_LOADERS.get(clazz);
         if (loader == null) {
-            loader = new ExtensionLoader<>(type);
-            ExtensionLoader<T> old = (ExtensionLoader<T>) EXTENSION_LOADERS.putIfAbsent(type, loader);
+            loader = new ExtensionLoader<>(clazz);
+            ExtensionLoader<T> old = (ExtensionLoader<T>) EXTENSION_LOADERS.putIfAbsent(clazz, loader);
             if(old!=null){
                 loader = old;
             }
@@ -58,16 +58,16 @@ public class ExtensionLoader<T> {
         return loader;
     }
 
-    private static void checkInterfaceType(Class<?> type) {
+    private static void checkInterfaceType(Class<?> clazz) {
 
-        if (type == null) {
-            failThrows(type, "Extension type == null");
+        if (clazz == null) {
+            failThrows(clazz, "Extension type == null");
         }
-        if (!type.isInterface()) {
-            failThrows(type, "Error extension type is not interface");
+        if (!clazz.isInterface()) {
+            failThrows(clazz, "Error extension type is not interface");
         }
-        if(!withSpiAnnotation(type)){
-            failThrows(type, "type:" + type.getName() +
+        if(!withSpiAnnotation(clazz)){
+            failThrows(clazz, "type:" + clazz.getName() +
                     " is not a extension, because WITHOUT @SPI Annotation!");
         }
     }
@@ -81,8 +81,8 @@ public class ExtensionLoader<T> {
     }
 
     private void checkClassInherit(Class<T> clz) {
-        if (!type.isAssignableFrom(clz)) {
-            failThrows(clz, "Error is not instanceof " + type.getName());
+        if (!clazz.isAssignableFrom(clz)) {
+            failThrows(clz, "Error is not instanceof " + clazz.getName());
         }
     }
 
@@ -110,12 +110,13 @@ public class ExtensionLoader<T> {
 
     /**获取SPI扩展实例*/
     public T getExtension(String name) {
-        if (StringUtils.isEmpty(name))
-            failThrows(type, "Extension name == null");
+        if (StringUtils.isEmpty(name)){
+            failThrows(clazz, "Extension name == null");
+        }
 
         checkInit();
 
-        SPI spi = type.getAnnotation(SPI.class);
+        SPI spi = clazz.getAnnotation(SPI.class);
         if (spi.scope() == Scope.SINGLETON) {
             return getSingletonInstance(name);
         } else {
@@ -139,79 +140,13 @@ public class ExtensionLoader<T> {
         return instance;
     }
 
-    /**获取默认SPI扩展*/
-    public T getDefaultExtension() {
-        if(StringUtils.isEmpty(defaultExtName)){
-            return null;
-        }
-
-        return getExtension(defaultExtName);
-    }
-
-    public String getDefaultExtensionName() {
-
-        return defaultExtName;
-    }
-
-    public boolean hasDefaultExtension() {
-
-        return StringUtils.isNotEmpty(defaultExtName);
-    }
-
-    public boolean hasExtension(String name) {
-        if (StringUtils.isEmpty(name))
-            failThrows(type, "Extension name == null");
-
-        checkInit();
-
-        return extensionClasses.get(name) != null;
-    }
-
-    public Set<String> getExtensionNames() {
-
-        checkInit();
-
-        return Collections.unmodifiableSet(new HashSet<>(extensionClasses.keySet()));
-    }
-
-    public Map<String, Class<T>> getExtensionClasses() {
-
-        checkInit();
-
-        return Collections.unmodifiableMap(extensionClasses);
-    }
-
-    /**
-     * 添加SPI接口实现类
-     * @param clz
-     */
-    public void addExtensionClass(Class<T> clz) {
-        if (clz == null) {
-            return;
-        }
-
-        checkInit();
-
-        checkExtensionType(clz);
-
-        String spiName = getSpiName(clz);
-
-        synchronized (this) {
-            if (extensionClasses.containsKey(spiName)) {
-                failThrows(clz, ":Error spiName already exist " + spiName);
-            } else {
-                extensionClasses.put(spiName, clz);
-            }
-        }
-    }
 
     private T createExtension(String name) {
         Class<?> clazz = getExtensionClass(name);
         try {
             return inject((T) clazz.newInstance(), clazz);
         } catch (Throwable t) {
-            String msg = "Fail to create extension " + name +
-                    " of extension point " + type.getName() + ", cause: " + t.getMessage();
+            String msg = "Fail to create extension " + name + " of extension point " + clazz.getName() + ", cause: " + t.getMessage();
             throw new IllegalStateException(msg, t);
         }
     }
@@ -230,9 +165,7 @@ public class ExtensionLoader<T> {
                     try {
                         field.set(instance, obj);
                     } catch (IllegalAccessException e) {
-                        String errMsg = "Fail to inject via field " + field.getName()
-                                + " of interface to extension implementation " + instance.getClass() +
-                                " for extension point " + type.getName();
+                        String errMsg = "Fail to inject via field " + field.getName() + " of interface to extension implementation " + instance.getClass() + " for extension point " + clazz.getName();
                         throw new IllegalStateException(errMsg, e);
                     }
                 } else {    //setter
@@ -257,15 +190,6 @@ public class ExtensionLoader<T> {
         }
 
         return instance;
-    }
-
-    private static String getSpiName(Class<?> cls){
-        String spiName = cls.getSimpleName();
-        Alias alias = cls.getAnnotation(Alias.class);
-        if(alias!=null && StringUtils.isNotEmpty(alias.value())){
-            spiName = alias.value();
-        }
-        return spiName;
     }
 
     private static boolean withSpiAnnotation(Class cls){
@@ -305,7 +229,7 @@ public class ExtensionLoader<T> {
         try {
             ConcurrentMap<String, Class<T>> extName2Class = new ConcurrentHashMap<>();
             ClassLoader classLoader = this.classLoader;
-            fullName = prefix + type.getName();
+            fullName = prefix + clazz.getName();
 
             Enumeration<URL> urls = classLoader.getResources(fullName);
             if (urls == null || !urls.hasMoreElements()) {
@@ -319,8 +243,7 @@ public class ExtensionLoader<T> {
 
             return extName2Class;
         } catch (Throwable t) {
-            throw new IllegalArgumentException("Exception when load extension point(interface: " +
-                    type.getName() + ", description file: " + fullName + ").", t);
+            throw new IllegalArgumentException("Exception when load extension point(interface: " + clazz.getName() + ", description file: " + fullName + ").", t);
         }
     }
 
@@ -358,20 +281,17 @@ public class ExtensionLoader<T> {
 
                     if (extName2Class.containsKey(name)) {
                         if (extName2Class.get(name) != clazz) {
-                            throw new IllegalStateException("Duplicate extension " + type.getName() +
-                                    " name " + name + " on " + clazz.getName() + " and " + clazz.getName());
+                            throw new IllegalStateException("Duplicate extension " + clazz.getName() + " name " + name + " on " + clazz.getName() + " and " + clazz.getName());
                         }
                     } else {
                         extName2Class.put(name, clazz);
                     }
                 } catch (Throwable e){
-                    throw new IllegalStateException("Failed to load config line(" + line +
-                            ") of config file(" + url + ") for extension(" + type.getName() + ")", e);
+                    throw new IllegalStateException("Failed to load config line(" + line + ") of config file(" + url + ") for extension(" + clazz.getName() + ")", e);
                 }
             }
         } catch (Throwable t) {
-            throw new IllegalStateException("Exception when load extension class(interface: " +
-                    type.getName(), t);
+            throw new IllegalStateException("Exception when load extension class(interface: " + clazz.getName(), t);
         }finally {
             if(br!=null){
                 try {
@@ -383,11 +303,7 @@ public class ExtensionLoader<T> {
         }
     }
 
-    private static <T> void failThrows(Class<T> type, String msg) {
-        throw new IllegalStateException(type.getName() + ": " + msg);
-    }
-
-    private static <T> void failThrows(Class<T> type, String msg, Throwable cause) {
-        throw new IllegalStateException(type.getName() + ": " + msg, cause);
+    private static <T> void failThrows(Class<T> clazz, String msg) {
+        throw new IllegalStateException(clazz.getName() + ": " + msg);
     }
 }

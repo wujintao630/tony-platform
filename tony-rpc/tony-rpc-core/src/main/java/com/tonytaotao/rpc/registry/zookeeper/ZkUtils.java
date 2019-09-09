@@ -13,11 +13,11 @@ public class ZkUtils {
         return toGroupPath(url) + Constants.PATH_SEPARATOR + url.getPath();
     }
 
-    public static String toNodeTypePath(URL url, ZkNodeType nodeType) {
+    public static String toNodeTypePath(URL url, ZkNodeTypeEnum nodeType) {
         return toServicePath(url) + Constants.PATH_SEPARATOR + nodeType.getValue();
     }
 
-    public static String toNodePath(URL url, ZkNodeType nodeType) {
+    public static String toNodePath(URL url, ZkNodeTypeEnum nodeType) {
         return toNodeTypePath(url, nodeType) + Constants.PATH_SEPARATOR + url.getHostPortString();
     }
 }

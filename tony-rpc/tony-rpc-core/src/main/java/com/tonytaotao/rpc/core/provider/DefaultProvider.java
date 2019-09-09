@@ -30,8 +30,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
 
         Method method = lookup(request);
         if (method == null) {
-            FrameworkRpcException exception =
-                    new FrameworkRpcException("Service method not exist: " + request.getInterfaceName() + "." + request.getMethodName());
+            FrameworkRpcException exception = new FrameworkRpcException("Service method not exist: " + request.getInterfaceName() + "." + request.getMethodName());
 
             response.setException(exception);
             return response;

@@ -8,13 +8,10 @@ import com.tonytaotao.rpc.netty.Endpoint;
 
 public interface NettyClient extends Endpoint {
 
-    Response invokeSync(final Request request)
-            throws InterruptedException, TransportRpcException;
+    Response invokeSync(final Request request) throws InterruptedException, TransportRpcException;
 
-    ResponseFuture invokeAsync(final Request request)
-            throws InterruptedException, TransportRpcException;
+    ResponseFuture invokeAsync(final Request request) throws InterruptedException, TransportRpcException;
 
-    void invokeOneway(final Request request)
-            throws InterruptedException, TransportRpcException;
+    void invokeOneway(final Request request) throws InterruptedException, TransportRpcException;
 
 }

@@ -7,7 +7,7 @@ import com.tonytaotao.rpc.core.response.DefaultResponse;
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.core.message.MessageRouter;
 import com.tonytaotao.rpc.core.RpcContext;
-import com.tonytaotao.rpc.netty.ChannelState;
+import com.tonytaotao.rpc.netty.ChannelStateEnum;
 import com.tonytaotao.rpc.netty.NettyDecoder;
 import com.tonytaotao.rpc.netty.NettyEncoder;
 import com.tonytaotao.rpc.common.Constants;
@@ -62,8 +62,7 @@ public class NettyServerImpl extends AbstractServer {
             return true;
         }
         // 最大响应包限制
-        final int maxContentLength = url.getIntParameter(UrlParamEnum.maxContentLength.getName(),
-                UrlParamEnum.maxContentLength.getIntValue());
+        final int maxContentLength = url.getIntParameter(UrlParamEnum.maxContentLength.getName(), UrlParamEnum.maxContentLength.getIntValue());
 
         this.serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
@@ -101,7 +100,7 @@ public class NettyServerImpl extends AbstractServer {
             logger.error(String.format("NettyServer bind to address:%s failure", this.localAddress), e);
             throw new FrameworkRpcException(String.format("NettyClient connect to address:%s failure", this.localAddress), e);
         }
-        state = ChannelState.AVAILABLE;
+        state = ChannelStateEnum.AVAILABLE;
         return true;
     }
 
@@ -138,7 +137,7 @@ public class NettyServerImpl extends AbstractServer {
             this.workerGroup.shutdownGracefully();
             this.pool.shutdown();
 
-            state = ChannelState.CLOSED;
+            state = ChannelStateEnum.CLOSED;
         } catch (Exception e) {
             logger.error("NettyServer close Error: url=" + url.getUri(), e);
         }

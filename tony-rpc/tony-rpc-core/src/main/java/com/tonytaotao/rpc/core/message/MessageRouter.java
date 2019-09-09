@@ -32,9 +32,7 @@ public class MessageRouter implements MessageHandler {
 
         if (provider == null) {
             logger.error(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey=" + serviceKey);
-            FrameworkRpcException exception =
-                    new FrameworkRpcException(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey="
-                            + serviceKey );
+            FrameworkRpcException exception = new FrameworkRpcException(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey=" + serviceKey );
 
             DefaultResponse response = new DefaultResponse();
             response.setException(exception);

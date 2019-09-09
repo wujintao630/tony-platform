@@ -4,7 +4,7 @@ import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
 import com.tonytaotao.rpc.core.extension.ExtensionLoader;
 import com.tonytaotao.rpc.codec.Codec;
-import com.tonytaotao.rpc.netty.ChannelState;
+import com.tonytaotao.rpc.netty.ChannelStateEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,14 +19,13 @@ public abstract class AbstractServer implements NettyServer {
     protected URL url;
     protected Codec codec;
 
-    protected volatile ChannelState state = ChannelState.NEW;
+    protected volatile ChannelStateEnum state = ChannelStateEnum.NEW;
 
     public AbstractServer() {}
 
     public AbstractServer(URL url) {
         this.url = url;
-        this.codec =
-                ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
+        this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
     }
 
     @Override
