@@ -7,19 +7,18 @@ import com.tonytaotao.rpc.core.response.Response;
 import com.tonytaotao.rpc.common.exception.BusinessRpcException;
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
 import com.tonytaotao.rpc.common.util.FrameworkUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MessageRouter implements MessageHandler {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+@Slf4j
+public class DefaultMessageHandler implements MessageHandler {
 
     private ConcurrentHashMap<String, Provider<?>> providers = new ConcurrentHashMap<>();
 
-    public MessageRouter() {}
-
-    public MessageRouter(Provider<?> provider) {
+    public DefaultMessageHandler(Provider<?> provider) {
         addProvider(provider);
     }
 
@@ -31,7 +30,7 @@ public class MessageRouter implements MessageHandler {
         Provider<?> provider = providers.get(serviceKey);
 
         if (provider == null) {
-            logger.error(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey=" + serviceKey);
+            log.error(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey=" + serviceKey);
             FrameworkRpcException exception = new FrameworkRpcException(this.getClass().getSimpleName() + " handler Error: provider not exist serviceKey=" + serviceKey );
 
             DefaultResponse response = new DefaultResponse();
@@ -58,12 +57,12 @@ public class MessageRouter implements MessageHandler {
             throw new FrameworkRpcException("provider alread exist: " + serviceKey);
         }
         providers.put(serviceKey, provider);
-        logger.info("RequestRouter addProvider: url=" + provider.getUrl());
+        log.info("RequestRouter addProvider: url=" + provider.getUrl());
     }
 
     public synchronized void removeProvider(Provider<?> provider) {
         String serviceKey = FrameworkUtils.getServiceKey(provider.getUrl());
         providers.remove(serviceKey);
-        logger.info("RequestRouter removeProvider: url=" + provider.getUrl());
+        log.info("RequestRouter removeProvider: url=" + provider.getUrl());
     }
 }

@@ -6,7 +6,7 @@ import com.tonytaotao.rpc.cluster.DefaultCluster;
 import com.tonytaotao.rpc.cluster.HaStrategy;
 import com.tonytaotao.rpc.cluster.LoadBalance;
 import com.tonytaotao.rpc.core.exporter.Exporter;
-import com.tonytaotao.rpc.core.provider.DefaultProvider;
+import com.tonytaotao.rpc.core.provider.DefaultRpcProvider;
 import com.tonytaotao.rpc.core.provider.Provider;
 import com.tonytaotao.rpc.protocol.Protocol;
 import com.tonytaotao.rpc.proxy.ProxyFactory;
@@ -50,7 +50,7 @@ public class DefaultConfigHandler implements ConfigHandler {
     public <T> Exporter<T> export(Class<T> interfaceClass, T ref, URL serviceUrl, List<URL> registryUrls) {
 
         String protocolName = serviceUrl.getParameter(UrlParamEnum.protocol.getName(), UrlParamEnum.protocol.getValue());
-        Provider<T> provider = new DefaultProvider<T>(ref, serviceUrl, interfaceClass);
+        Provider<T> provider = new DefaultRpcProvider<T>(ref, serviceUrl, interfaceClass);
         Protocol protocol = new ProtocolFilterWrapper(ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolName));
         Exporter<T> exporter = protocol.export(provider, serviceUrl);
 

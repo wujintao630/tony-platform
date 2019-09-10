@@ -4,25 +4,28 @@ import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.core.request.Request;
 import com.tonytaotao.rpc.core.response.Response;
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
+import com.tonytaotao.rpc.netty.client.NettyClient;
+import com.tonytaotao.rpc.netty.client.DefaultNettyClient;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class AbstractReference<T> implements Reference<T> {
-    protected Class<T> clz;
+@Slf4j
+public class DefaultRpcReference<T> implements Reference<T> {
+
+    private NettyClient client;
+
+    private Class<T> clazz;
     private URL url;
-    protected URL serviceUrl;
+    private URL serviceUrl;
 
-    protected AtomicInteger activeCounter = new AtomicInteger(0);
+    private AtomicInteger activeCounter = new AtomicInteger(0);
 
-    public AbstractReference(Class<T> clz, URL serviceUrl) {
-        this.clz = clz;
-        this.serviceUrl = serviceUrl;
-    }
-
-    public AbstractReference(Class<T> clz, URL url, URL serviceUrl) {
-        this.clz = clz;
+    public DefaultRpcReference(Class<T> clazz, URL url, URL serviceUrl) {
+        this.clazz = clazz;
         this.url = url;
         this.serviceUrl = serviceUrl;
+        this.client = new DefaultNettyClient(serviceUrl);
     }
 
     @Override
@@ -32,7 +35,7 @@ public abstract class AbstractReference<T> implements Reference<T> {
 
     @Override
     public Class<T> getInterface() {
-        return clz;
+        return clazz;
     }
 
     @Override
@@ -57,13 +60,19 @@ public abstract class AbstractReference<T> implements Reference<T> {
         return activeCounter.get();
     }
 
-    protected abstract Response doCall(Request request);
+    private Response doCall(Request request) {
+        try {
+            return client.invokeSync(request);
+        } catch (Exception e) {
+            throw new FrameworkRpcException("invoke exception", e);
+        }
+    }
 
-    protected void decrActiveCount(Request request, Response response) {
+    private void decrActiveCount(Request request, Response response) {
         activeCounter.decrementAndGet();
     }
 
-    protected void incrActiveCount(Request request) {
+    private void incrActiveCount(Request request) {
         activeCounter.incrementAndGet();
     }
 
@@ -75,5 +84,24 @@ public abstract class AbstractReference<T> implements Reference<T> {
     @Override
     public URL getUrl() {
         return url;
+    }
+
+    @Override
+    public void init() {
+        this.client.open();
+    }
+
+    @Override
+    public void destroy() {
+        try{
+            client.close();
+        } catch (Exception e){
+            log.error("reference destroy error", e);
+        }
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return client.isAvailable();
     }
 }

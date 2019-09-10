@@ -1,7 +1,9 @@
 package com.tonytaotao.rpc.netty.client;
 
+import com.tonytaotao.rpc.codec.Codec;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
+import com.tonytaotao.rpc.core.extension.ExtensionLoader;
 import com.tonytaotao.rpc.core.request.Request;
 import com.tonytaotao.rpc.core.response.DefaultResponse;
 import com.tonytaotao.rpc.core.response.Response;
@@ -20,6 +22,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +36,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class NettyClientImpl extends AbstractClient {
+@Slf4j
+public class DefaultNettyClient implements NettyClient {
 
     private EventLoopGroup group = new NioEventLoopGroup();
     private Bootstrap b = new Bootstrap();
@@ -47,9 +51,16 @@ public class NettyClientImpl extends AbstractClient {
 
     private volatile ChannelWrapper channelWrapper;
 
-    public NettyClientImpl(URL url) {
-        super(url);
+    private InetSocketAddress localAddress;
+    private InetSocketAddress remoteAddress;
 
+    private URL url;
+    private Codec codec;
+
+    private volatile ChannelStateEnum state = ChannelStateEnum.NEW;
+
+    public DefaultNettyClient(URL url) {
+        this.url = url;
         this.remoteAddress = new InetSocketAddress(url.getHost(), url.getPort());
         this.timeout = url.getIntParameter(UrlParamEnum.requestTimeout.getName(), UrlParamEnum.requestTimeout.getIntValue());
 
@@ -62,19 +73,32 @@ public class NettyClientImpl extends AbstractClient {
                 scanRpcFutureTable();
             }
         }, 0, 5000, TimeUnit.MILLISECONDS);
+
+        this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
+        log.info("NettyClient init url:" + url.getHost() + "-" + url.getPath() + ", use codec:" + codec.getClass().getSimpleName());
+    }
+
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return remoteAddress;
     }
 
     @Override
     public synchronized boolean open() {
 
         if(initializing){
-            logger.warn("NettyClient is initializing: url=" + url);
+            log.warn("NettyClient is initializing: url=" + url);
             return true;
         }
         initializing = true;
 
         if(state.isAvailable()){
-            logger.warn("NettyClient has initialized: url=" + url);
+            log.warn("NettyClient has initialized: url=" + url);
             return true;
         }
 
@@ -101,7 +125,7 @@ public class NettyClientImpl extends AbstractClient {
             ChannelFuture channelFuture = b.connect(this.remoteAddress).sync();
             this.channelWrapper = new ChannelWrapper(channelFuture);
         } catch (InterruptedException e) {
-            logger.error(String.format("NettyClient connect to address:%s failure", this.remoteAddress), e);
+            log.error(String.format("NettyClient connect to address:%s failure", this.remoteAddress), e);
             throw new FrameworkRpcException(String.format("NettyClient connect to address:%s failure"), e);
         }
 
@@ -136,10 +160,10 @@ public class NettyClientImpl extends AbstractClient {
                 public void operationComplete(ChannelFuture future) throws Exception {
 
                     if (future.isSuccess()) {
-                        logger.info("send success, request id:{}", request.getRequestId());
+                        log.info("send success, request id:{}", request.getRequestId());
 
                     } else {
-                        logger.info("send failure, request id:{}", request.getRequestId());
+                        log.info("send failure, request id:{}", request.getRequestId());
                         responseFutureMap.remove(request.getRequestId());
                         rpcFuture.setFailure(future.cause());
                     }
@@ -164,7 +188,7 @@ public class NettyClientImpl extends AbstractClient {
                 public void operationComplete(ChannelFuture future) throws Exception {
 
                     if (future.isSuccess()) {
-                        logger.info("send success, request id:{}", request.getRequestId());
+                        log.info("send success, request id:{}", request.getRequestId());
                     }
                 }
             });
@@ -184,9 +208,9 @@ public class NettyClientImpl extends AbstractClient {
                 public void operationComplete(ChannelFuture future) throws Exception {
 
                     if (future.isSuccess()) {
-                        logger.info("send success, request id:{}", request.getRequestId());
+                        log.info("send success, request id:{}", request.getRequestId());
                     } else {
-                        logger.info("send failure, request id:{}", request.getRequestId());
+                        log.info("send failure, request id:{}", request.getRequestId());
                     }
                 }
             });
@@ -204,7 +228,7 @@ public class NettyClientImpl extends AbstractClient {
     public synchronized void close(int timeout) {
 
         if(state.isClosed()){
-            logger.info("NettyClient close fail: already close, url={}", url.getUri());
+            log.info("NettyClient close fail: already close, url={}", url.getUri());
             return;
         }
 
@@ -214,7 +238,7 @@ public class NettyClientImpl extends AbstractClient {
 
             state = ChannelStateEnum.CLOSED;
         } catch (Exception e) {
-            logger.error("NettyClient close Error: url=" + url.getUri(), e);
+            log.error("NettyClient close Error: url=" + url.getUri(), e);
         }
 
     }
@@ -223,8 +247,7 @@ public class NettyClientImpl extends AbstractClient {
         private Logger logger = LoggerFactory.getLogger(getClass());
 
         @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg)
-                throws Exception {
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
             logger.info("client read msg:{}, ", msg);
             if(msg instanceof Response) {
@@ -240,8 +263,7 @@ public class NettyClientImpl extends AbstractClient {
         }
 
         @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-                throws Exception {
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             logger.error("client caught exception", cause);
             ctx.close();
         }
@@ -266,7 +288,7 @@ public class NettyClientImpl extends AbstractClient {
     private void scanRpcFutureTable() {
 
         long currentTime = System.currentTimeMillis();
-        logger.info("scan timeout RpcFuture, currentTime:{}", currentTime);
+        log.info("scan timeout RpcFuture, currentTime:{}", currentTime);
 
         final List<ResponseFuture> timeoutFutureList = new ArrayList<>();
         Iterator<Map.Entry<Long, ResponseFuture>> it = this.responseFutureMap.entrySet().iterator();

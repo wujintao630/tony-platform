@@ -6,15 +6,38 @@ import java.io.IOException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 
-public class DefaultResponseFuture<T> extends AbstractResponseFuture<T> {
+public class DefaultResponseFuture<T> implements ResponseFuture<T> {
+
+
+    private volatile FutureStateEnum state = FutureStateEnum.NEW; //状态
+
+    private final long createTime = System.currentTimeMillis();//处理开始时间
 
     private volatile T result;
     private volatile Throwable err;
     private CountDownLatch latch;
 
+    private long timeoutInMillis;
+
     public DefaultResponseFuture(long timeoutInMillis) {
-        super(timeoutInMillis);
+        this.timeoutInMillis = timeoutInMillis;
     }
+
+    @Override
+    public boolean isCancelled() {
+        return this.state == FutureStateEnum.CANCELLED;
+    }
+
+    @Override
+    public boolean isDone() {
+        return this.state == FutureStateEnum.DONE;
+    }
+
+    @Override
+    public boolean isTimeout() {
+        return createTime + timeoutInMillis > System.currentTimeMillis();
+    }
+
 
     @Override
     public T get() throws InterruptedException {
@@ -37,7 +60,7 @@ public class DefaultResponseFuture<T> extends AbstractResponseFuture<T> {
         synchronized(this) {
             if(!this.isDone()) {
                 this.result = result;
-                this.state = FutureState.DONE;
+                this.state = FutureStateEnum.DONE;
                 if(this.latch != null) {
                     this.latch.countDown();
                 }
@@ -54,7 +77,7 @@ public class DefaultResponseFuture<T> extends AbstractResponseFuture<T> {
         synchronized(this) {
             if(!this.isDone()) {
                 this.err = throwable;
-                this.state = FutureState.DONE;
+                this.state = FutureStateEnum.DONE;
                 if(this.latch != null) {
                     this.latch.countDown();
                 }
@@ -64,7 +87,7 @@ public class DefaultResponseFuture<T> extends AbstractResponseFuture<T> {
 
     private T returnResult() throws CancellationException {
         if(this.err != null) {
-            if(this.state == FutureState.CANCELLED) {
+            if(this.state == FutureStateEnum.CANCELLED) {
                 throw new CancellationException();
             } else {
                 throw new FrameworkRpcException(this.err);

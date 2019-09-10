@@ -3,17 +3,12 @@ package com.tonytaotao.rpc.protocol.defaults;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.core.exporter.AbstractExporter;
 import com.tonytaotao.rpc.core.exporter.Exporter;
-import com.tonytaotao.rpc.core.message.MessageRouter;
+import com.tonytaotao.rpc.core.message.DefaultMessageHandler;
 import com.tonytaotao.rpc.core.provider.Provider;
-import com.tonytaotao.rpc.core.reference.AbstractReference;
+import com.tonytaotao.rpc.core.reference.DefaultRpcReference;
 import com.tonytaotao.rpc.core.reference.Reference;
-import com.tonytaotao.rpc.core.request.Request;
-import com.tonytaotao.rpc.core.response.Response;
-import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
-import com.tonytaotao.rpc.netty.client.NettyClient;
-import com.tonytaotao.rpc.netty.client.NettyClientImpl;
 import com.tonytaotao.rpc.netty.server.NettyServer;
-import com.tonytaotao.rpc.netty.server.NettyServerImpl;
+import com.tonytaotao.rpc.netty.server.DefaultNettyServer;
 import com.tonytaotao.rpc.protocol.AbstractProtocol;
 import com.tonytaotao.rpc.common.util.FrameworkUtils;
 
@@ -25,7 +20,7 @@ public class DefaultRpcProtocol extends AbstractProtocol {
 
     private final ConcurrentHashMap<String, NettyServer> ipPort2Server = new ConcurrentHashMap<>();
     // 多个service可能在相同端口进行服务暴露，因此来自同个端口的请求需要进行路由以找到相应的服务，同时不在该端口暴露的服务不应该被找到
-    private final Map<String, MessageRouter> ipPort2RequestRouter = new HashMap<>();
+    private final Map<String, DefaultMessageHandler> ipPort2RequestRouter = new HashMap<>();
 
     @Override
     protected <T> Reference<T> createReference(Class<T> clz, URL url, URL serviceUrl) {
@@ -42,42 +37,6 @@ public class DefaultRpcProtocol extends AbstractProtocol {
 
     }
 
-    class DefaultRpcReference<T> extends AbstractReference<T> {
-        private NettyClient client;
-
-        DefaultRpcReference(Class<T> clz, URL url, URL serviceUrl) {
-            super(clz, url, serviceUrl);
-            this.client = new NettyClientImpl(serviceUrl);
-        }
-
-        @Override
-        public Response doCall(Request request) {
-            try {
-                return client.invokeSync(request);
-            } catch (Exception e) {
-                throw new FrameworkRpcException("invoke exception", e);
-            }
-        }
-
-        @Override
-        public void init() {
-            this.client.open();
-        }
-
-        @Override
-        public void destroy() {
-            try{
-                client.close();
-            } catch (Exception e){
-                logger.error("reference destroy error", e);
-            }
-        }
-
-        @Override
-        public boolean isAvailable() {
-            return client.isAvailable();
-        }
-    }
 
     class DefaultRpcExporter<T> extends AbstractExporter<T> {
 
@@ -91,28 +50,28 @@ public class DefaultRpcProtocol extends AbstractProtocol {
         private NettyServer initServer(URL url) {
             String ipPort = url.getHostPortString();
 
-            MessageRouter router = initRequestRouter(url);
+            DefaultMessageHandler router = initRequestRouter(url);
 
             NettyServer server;
             synchronized (ipPort2Server) {
                 server = ipPort2Server.get(ipPort);
                 if (server == null) {
-                    server = new NettyServerImpl(url, router);
+                    server = new DefaultNettyServer(url, router);
                     ipPort2Server.put(ipPort, server);
                 }
             }
             return server;
         }
 
-        private MessageRouter initRequestRouter(URL url) {
-            MessageRouter requestRouter;
+        private DefaultMessageHandler initRequestRouter(URL url) {
+            DefaultMessageHandler requestRouter;
             String ipPort = url.getHostPortString();
 
             synchronized (ipPort2RequestRouter) {
                 requestRouter = ipPort2RequestRouter.get(ipPort);
 
                 if (requestRouter == null) {
-                    requestRouter = new MessageRouter(provider);
+                    requestRouter = new DefaultMessageHandler(provider);
                     ipPort2RequestRouter.put(ipPort, requestRouter);
                 } else {
                     requestRouter.addProvider(provider);
@@ -134,7 +93,7 @@ public class DefaultRpcProtocol extends AbstractProtocol {
             }
 
             synchronized (ipPort2RequestRouter) {
-                MessageRouter requestRouter = ipPort2RequestRouter.get(ipPort);
+                DefaultMessageHandler requestRouter = ipPort2RequestRouter.get(ipPort);
 
                 if (requestRouter != null) {
                     requestRouter.removeProvider(provider);

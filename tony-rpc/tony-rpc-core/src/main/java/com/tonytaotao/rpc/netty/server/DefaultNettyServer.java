@@ -1,11 +1,13 @@
 package com.tonytaotao.rpc.netty.server;
 
+import com.tonytaotao.rpc.codec.Codec;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
+import com.tonytaotao.rpc.core.extension.ExtensionLoader;
 import com.tonytaotao.rpc.core.request.DefaultRequest;
 import com.tonytaotao.rpc.core.response.DefaultResponse;
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
-import com.tonytaotao.rpc.core.message.MessageRouter;
+import com.tonytaotao.rpc.core.message.DefaultMessageHandler;
 import com.tonytaotao.rpc.core.RpcContext;
 import com.tonytaotao.rpc.netty.ChannelStateEnum;
 import com.tonytaotao.rpc.netty.NettyDecoder;
@@ -19,6 +21,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,38 +30,57 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class NettyServerImpl extends AbstractServer {
+@Slf4j
+public class DefaultNettyServer implements NettyServer {
 
     private EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private EventLoopGroup workerGroup = new NioEventLoopGroup();
     private ServerBootstrap serverBootstrap = new ServerBootstrap();
 
-    private ThreadPoolExecutor pool;    //业务处理线程池
-    private MessageRouter router;
+    private ThreadPoolExecutor threadPoolExecutor;    //业务处理线程池
+    private DefaultMessageHandler messageHandler;
+
+    private InetSocketAddress localAddress;
+    private InetSocketAddress remoteAddress;
+
+    private URL url;
+    private Codec codec;
+
+    private volatile ChannelStateEnum state = ChannelStateEnum.NEW;
 
     private volatile boolean initializing = false;
 
-    public NettyServerImpl(URL url, MessageRouter router){
-        super(url);
-
+    public DefaultNettyServer(URL url, DefaultMessageHandler messageHandler){
+        this.url = url;
+        this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
         this.localAddress = new InetSocketAddress(url.getPort());
-        this.router = router;
-        this.pool = new ThreadPoolExecutor(url.getIntParameter(UrlParamEnum.minWorkerThread.getName(), UrlParamEnum.minWorkerThread.getIntValue()),
+        this.messageHandler = messageHandler;
+        this.threadPoolExecutor = new ThreadPoolExecutor(url.getIntParameter(UrlParamEnum.minWorkerThread.getName(), UrlParamEnum.minWorkerThread.getIntValue()),
                 url.getIntParameter(UrlParamEnum.maxWorkerThread.getName(), UrlParamEnum.maxWorkerThread.getIntValue()),
                 120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                 new DefaultThreadFactory(String.format("%s-%s", Constants.FRAMEWORK_NAME, "biz")));
     }
 
     @Override
+    public InetSocketAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return remoteAddress;
+    }
+
+    @Override
     public synchronized boolean open() {
         if(initializing) {
-            logger.warn("NettyServer ServerChannel is initializing: url=" + url);
+            log.warn("NettyServer ServerChannel is initializing: url=" + url);
             return true;
         }
         initializing = true;
 
         if (state.isAvailable()) {
-            logger.warn("NettyServer ServerChannel has initialized: url=" + url);
+            log.warn("NettyServer ServerChannel has initialized: url=" + url);
             return true;
         }
         // 最大响应包限制
@@ -90,14 +112,14 @@ public class NettyServerImpl extends AbstractServer {
                 public void operationComplete(ChannelFuture f) throws Exception {
 
                     if(f.isSuccess()){
-                        logger.info("Rpc Server bind port:{} success", url.getPort());
+                        log.info("Rpc Server bind port:{} success", url.getPort());
                     } else {
-                        logger.error("Rpc Server bind port:{} failure", url.getPort());
+                        log.error("Rpc Server bind port:{} failure", url.getPort());
                     }
                 }
             });
         } catch (InterruptedException e) {
-            logger.error(String.format("NettyServer bind to address:%s failure", this.localAddress), e);
+            log.error(String.format("NettyServer bind to address:%s failure", this.localAddress), e);
             throw new FrameworkRpcException(String.format("NettyClient connect to address:%s failure", this.localAddress), e);
         }
         state = ChannelStateEnum.AVAILABLE;
@@ -128,18 +150,18 @@ public class NettyServerImpl extends AbstractServer {
     public synchronized void close(int timeout) {
 
         if (state.isClosed()) {
-            logger.info("NettyServer close fail: already close, url={}", url.getUri());
+            log.info("NettyServer close fail: already close, url={}", url.getUri());
             return;
         }
 
         try {
             this.bossGroup.shutdownGracefully();
             this.workerGroup.shutdownGracefully();
-            this.pool.shutdown();
+            this.threadPoolExecutor.shutdown();
 
             state = ChannelStateEnum.CLOSED;
         } catch (Exception e) {
-            logger.error("NettyServer close Error: url=" + url.getUri(), e);
+            log.error("NettyServer close Error: url=" + url.getUri(), e);
         }
     }
 
@@ -148,14 +170,14 @@ public class NettyServerImpl extends AbstractServer {
         @Override
         protected void channelRead0(ChannelHandlerContext context, DefaultRequest request) throws Exception {
 
-            logger.info("Rpc server receive request id:{}", request.getRequestId());
+            log.info("Rpc server receive request id:{}", request.getRequestId());
             //处理请求
             processRpcRequest(context, request);
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            logger.error("NettyServerHandler exceptionCaught: remote=" + ctx.channel().remoteAddress()
+            log.error("NettyServerHandler exceptionCaught: remote=" + ctx.channel().remoteAddress()
                     + " local=" + ctx.channel().localAddress(), cause);
             ctx.channel().close();
         }
@@ -165,10 +187,9 @@ public class NettyServerImpl extends AbstractServer {
     private void processRpcRequest(final ChannelHandlerContext context, final DefaultRequest request) {
         final long processStartTime = System.currentTimeMillis();
         try {
-            this.pool.execute(new Runnable() {
+            this.threadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-
                     try {
                         RpcContext.init(request);
                         processRpcRequest(context, request, processStartTime);
@@ -190,11 +211,11 @@ public class NettyServerImpl extends AbstractServer {
 
     private void processRpcRequest(ChannelHandlerContext context, DefaultRequest request, long processStartTime) {
 
-        DefaultResponse response = (DefaultResponse) this.router.handle(request);//;
+        DefaultResponse response = (DefaultResponse) this.messageHandler.handle(request);
         response.setProcessTime(System.currentTimeMillis() - processStartTime);
         if(request.getType()!=Constants.REQUEST_ONEWAY){    //非单向调用
             context.writeAndFlush(response);
         }
-        logger.info("Rpc server process request:{} end...", request.getRequestId());
+        log.info("Rpc server process request:{} end...", request.getRequestId());
     }
 }

@@ -1,6 +1,6 @@
 package com.tonytaotao.rpc.core.response.future;
 
-public enum FutureState {
+public enum FutureStateEnum {
     /** the task is doing **/
     NEW(0),
     /** the task is done **/
@@ -10,7 +10,7 @@ public enum FutureState {
 
     private int state;
 
-    FutureState(int state) {
+    FutureStateEnum(int state) {
         this.state = state;
     }
 }
