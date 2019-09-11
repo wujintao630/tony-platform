@@ -5,7 +5,7 @@ import com.tonytaotao.rpc.cluster.Cluster;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
 import com.tonytaotao.rpc.core.extension.ExtensionLoader;
-import com.tonytaotao.rpc.core.ConfigHandler;
+import com.tonytaotao.rpc.core.config.ConfigHandler;
 import com.tonytaotao.rpc.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 

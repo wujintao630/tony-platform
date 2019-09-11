@@ -1,6 +1,7 @@
 package com.tonytaotao.rpc.registry.zookeeper;
 
 public enum ZkNodeTypeEnum {
+
     SERVER("providers"),
     CLIENT("consumers");
 

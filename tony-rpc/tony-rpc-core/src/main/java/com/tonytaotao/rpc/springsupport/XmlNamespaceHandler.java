@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author tony
+ */
 public class XmlNamespaceHandler extends NamespaceHandlerSupport {
     public final static Set<String> protocolDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
     public final static Set<String> registryDefineNames = Collections.newSetFromMap(new ConcurrentHashMap<>());

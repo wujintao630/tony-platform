@@ -57,7 +57,7 @@ public class DefaultNettyServer implements NettyServer {
         this.messageHandler = messageHandler;
         this.threadPoolExecutor = new ThreadPoolExecutor(url.getIntParameter(UrlParamEnum.minWorkerThread.getName(), UrlParamEnum.minWorkerThread.getIntValue()),
                 url.getIntParameter(UrlParamEnum.maxWorkerThread.getName(), UrlParamEnum.maxWorkerThread.getIntValue()),
-                120, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
+                120, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
                 new DefaultThreadFactory(String.format("%s-%s", Constants.FRAMEWORK_NAME, "biz")));
     }
 

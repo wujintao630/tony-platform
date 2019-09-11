@@ -5,6 +5,7 @@ import com.tonytaotao.rpc.common.config.ProtocolConfig;
 import com.tonytaotao.rpc.common.config.ReferenceConfig;
 import com.tonytaotao.rpc.common.config.RegistryConfig;
 import com.tonytaotao.rpc.common.util.FrameworkUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -12,11 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 
-public class ReferenceConfigBean<T> extends ReferenceConfig<T> implements
-        FactoryBean<T>, BeanFactoryAware,
-        InitializingBean, DisposableBean {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+@Slf4j
+public class ReferenceConfigBean<T> extends ReferenceConfig<T> implements FactoryBean<T>, BeanFactoryAware, InitializingBean, DisposableBean {
 
     private transient BeanFactory beanFactory;
 
@@ -43,7 +41,7 @@ public class ReferenceConfigBean<T> extends ReferenceConfig<T> implements
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        logger.debug("check reference interface:%s config", getInterfaceName());
+        log.debug("check reference interface:%s config", getInterfaceName());
         //检查依赖的配置
         checkApplication();
         checkProtocolConfig();

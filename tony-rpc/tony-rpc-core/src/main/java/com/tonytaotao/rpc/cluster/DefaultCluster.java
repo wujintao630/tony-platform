@@ -68,11 +68,9 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
         logger.info("Cluster init over, url:{}, references size:{}", url, references!=null ? references.size():0);
         boolean check = Boolean.parseBoolean(url.getParameter(UrlParamEnum.check.getName(), UrlParamEnum.check.getValue()));
         if(CollectionUtils.isEmpty(references)) {
-            logger.warn(String.format("Cluster No service urls for the reference:%s, registries:%s",
-                    this.url, registryUrls));
+            logger.warn(String.format("Cluster No service urls for the reference:%s, registries:%s", this.url, registryUrls));
             if(check) {
-                throw new FrameworkRpcException(String.format("Cluster No service urls for the reference:%s, registries:%s",
-                        this.url, registryUrls));
+                throw new FrameworkRpcException(String.format("Cluster No service urls for the reference:%s, registries:%s", this.url, registryUrls));
             }
         }
         available = true;
@@ -163,13 +161,11 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
     @Override
     public synchronized void notify(URL registryUrl, List<URL> urls) {
         if (CollectionUtils.isEmpty(urls)) {
-            logger.warn("Cluster config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(),
-                    url, urls);
+            logger.warn("Cluster config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(), url, urls);
             return;
         }
 
-        logger.info("Cluster config change notify: registry={} service={} urls={}", registryUrl.getUri(), url,
-                urls);
+        logger.info("Cluster config change notify: registry={} service={} urls={}", registryUrl.getUri(), url, urls);
 
         List<Reference<T>> newReferences = new ArrayList<>();
         for (URL u : urls) {

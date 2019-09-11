@@ -12,6 +12,9 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
+/**
+ * @author tony
+ */
 public class XmlBeanDefinitionParser implements BeanDefinitionParser {
 
     private final Class<?> beanClass;
@@ -27,15 +30,14 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         try {
             return parse(element, parserContext, beanClass, required);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required)
-            throws ClassNotFoundException {
+    private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required) {
         RootBeanDefinition bd = new RootBeanDefinition();
         bd.setBeanClass(beanClass);
         // 不允许lazy init
@@ -75,9 +77,9 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
             parseCommonProperty("env", null, element, bd, parserContext);
             parseCommonProperty("default", "isDefault", element, bd, parserContext);
 
+
         } else if (ProtocolConfig.class.equals(beanClass)) {
             XmlNamespaceHandler.protocolDefineNames.add(id);
-
             parseCommonProperty("name", null, element, bd, parserContext);
             parseCommonProperty("host", null, element, bd, parserContext);
             parseCommonProperty("port", null, element, bd, parserContext);
@@ -91,9 +93,9 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
             parseCommonProperty("payload", null, element, bd, parserContext);
             parseCommonProperty("heartbeat", null, element, bd, parserContext);
             parseCommonProperty("default", "isDefault", element, bd, parserContext);
+
         } else if (RegistryConfig.class.equals(beanClass)) {
             XmlNamespaceHandler.registryDefineNames.add(id);
-
             parseCommonProperty("protocol", null, element, bd, parserContext);
             parseCommonProperty("address", null, element, bd, parserContext);
             parseCommonProperty("connect-timeout", "connectTimeout", element, bd, parserContext);
@@ -101,9 +103,9 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
             parseCommonProperty("username", null, element, bd, parserContext);
             parseCommonProperty("password", null, element, bd, parserContext);
             parseCommonProperty("default", "isDefault", element, bd, parserContext);
+
         } else if (ReferenceConfigBean.class.equals(beanClass)) {
             XmlNamespaceHandler.referenceConfigDefineNames.add(id);
-
             parseCommonProperty("interface", "interfaceName", element, bd, parserContext);
 
             String registry = element.getAttribute("registry");
@@ -144,8 +146,7 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
         return bd;
     }
 
-    private static void parseCommonProperty(String name, String alias, Element element, BeanDefinition bd,
-                                            ParserContext parserContext) {
+    private static void parseCommonProperty(String name, String alias, Element element, BeanDefinition bd, ParserContext parserContext) {
 
         String value = element.getAttribute(name);
         if (StringUtils.isNotBlank(value)) {
@@ -154,8 +155,7 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
-    private static void parseSingleRef(String property, Element element, BeanDefinition bd,
-                                       ParserContext parserContext) {
+    private static void parseSingleRef(String property, Element element, BeanDefinition bd, ParserContext parserContext) {
 
         String value = element.getAttribute(property);
         if (StringUtils.isNotBlank(value)) {
@@ -170,8 +170,7 @@ public class XmlBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
-    private static void parseMultiRef(String property, String value, BeanDefinition bd,
-                                      ParserContext parserContext) {
+    private static void parseMultiRef(String property, String value, BeanDefinition bd, ParserContext parserContext) {
         String[] values = value.split("\\s*[,]+\\s*");
         ManagedList list = null;
         for (int i = 0; i < values.length; i++) {

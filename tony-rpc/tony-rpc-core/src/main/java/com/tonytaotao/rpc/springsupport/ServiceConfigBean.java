@@ -4,6 +4,7 @@ import com.tonytaotao.rpc.common.config.ProtocolConfig;
 import com.tonytaotao.rpc.common.config.RegistryConfig;
 import com.tonytaotao.rpc.common.config.ServiceConfig;
 import com.tonytaotao.rpc.common.util.FrameworkUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +16,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactoryAware,
-        InitializingBean,
-        ApplicationListener<ContextRefreshedEvent>,
-        DisposableBean {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+@Slf4j
+public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactoryAware, InitializingBean, ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
     private transient BeanFactory beanFactory;
 
@@ -39,7 +36,7 @@ public class ServiceConfigBean<T> extends ServiceConfig<T> implements BeanFactor
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        logger.debug("check service interface:%s config", getInterfaceName());
+        log.debug("check service interface:%s config", getInterfaceName());
         checkApplication();
         checkRegistryConfig();
         checkProtocolConfig();

@@ -1,4 +1,4 @@
-package com.tonytaotao.rpc.core;
+package com.tonytaotao.rpc.core.config;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.tonytaotao.rpc.cluster.Cluster;

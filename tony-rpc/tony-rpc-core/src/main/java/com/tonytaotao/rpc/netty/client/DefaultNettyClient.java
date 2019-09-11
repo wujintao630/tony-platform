@@ -31,10 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 public class DefaultNettyClient implements NettyClient {
@@ -62,19 +59,15 @@ public class DefaultNettyClient implements NettyClient {
     public DefaultNettyClient(URL url) {
         this.url = url;
         this.remoteAddress = new InetSocketAddress(url.getHost(), url.getPort());
+
         this.timeout = url.getIntParameter(UrlParamEnum.requestTimeout.getName(), UrlParamEnum.requestTimeout.getIntValue());
 
-        this.scheduledExecutorService = Executors.newScheduledThreadPool(5,
-                new DefaultThreadFactory(String.format("%s-%s", Constants.FRAMEWORK_NAME, "future")));
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(5, new DefaultThreadFactory(String.format("%s-%s", Constants.FRAMEWORK_NAME, "future")));
 
-        this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                scanRpcFutureTable();
-            }
-        }, 0, 5000, TimeUnit.MILLISECONDS);
+        this.scheduledExecutorService.scheduleAtFixedRate(() -> { scanRpcFutureTable(); }, 0, 5000, TimeUnit.MILLISECONDS);
 
         this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
+
         log.info("NettyClient init url:" + url.getHost() + "-" + url.getPath() + ", use codec:" + codec.getClass().getSimpleName());
     }
 
@@ -103,8 +96,7 @@ public class DefaultNettyClient implements NettyClient {
         }
 
         // 最大响应包限制
-        final int maxContentLength = url.getIntParameter(UrlParamEnum.maxContentLength.getName(),
-                UrlParamEnum.maxContentLength.getIntValue());
+        final int maxContentLength = url.getIntParameter(UrlParamEnum.maxContentLength.getName(), UrlParamEnum.maxContentLength.getIntValue());
 
         b.group(group).channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
@@ -113,10 +105,9 @@ public class DefaultNettyClient implements NettyClient {
                 .option(ChannelOption.SO_SNDBUF, url.getIntParameter(UrlParamEnum.bufferSize.getName(), UrlParamEnum.bufferSize.getIntValue()))
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    public void initChannel(SocketChannel ch)
-                            throws Exception {
-                        ch.pipeline().addLast(new NettyDecoder(codec, url, maxContentLength, Constants.HEADER_SIZE, 4), //
-                                new NettyEncoder(codec, url), //
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new NettyDecoder(codec, url, maxContentLength, Constants.HEADER_SIZE, 4),
+                                new NettyEncoder(codec, url),
                                 new NettyClientHandler());
                     }
                 });

@@ -1,19 +1,19 @@
-package com.tonytaotao.rpc.codec.defaults;
+package com.tonytaotao.rpc.codec;
 
-import com.tonytaotao.rpc.codec.AbstractCodec;
+import com.tonytaotao.rpc.codec.Codec;
+import com.tonytaotao.rpc.common.Constants;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
+import com.tonytaotao.rpc.core.extension.ExtensionLoader;
 import com.tonytaotao.rpc.core.request.DefaultRequest;
 import com.tonytaotao.rpc.core.response.DefaultResponse;
-import com.tonytaotao.rpc.core.extension.ExtensionLoader;
 import com.tonytaotao.rpc.serializer.Serializer;
-import com.tonytaotao.rpc.common.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class DefaultCodec extends AbstractCodec {
+public class DefaultCodec implements Codec {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -31,5 +31,19 @@ public class DefaultCodec extends AbstractCodec {
             return deserialize(data, DefaultRequest.class, ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(serialization));
         }
         return deserialize(data, DefaultResponse.class, ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(serialization));
+    }
+
+    private byte[] serialize(Object message, Serializer serializer) throws IOException {
+        if (message == null) {
+            return null;
+        }
+        return serializer.serialize(message);
+    }
+
+    private Object deserialize(byte[] data, Class<?> type, Serializer serializer) throws IOException {
+        if (data == null) {
+            return null;
+        }
+        return serializer.deserialize(data, type);
     }
 }
