@@ -22,7 +22,7 @@ public class Constants {
     public static final byte REQUEST_SYNC = 0x05;
     public static final byte REQUEST_ASYNC = 0x07;
 
-    public static final int DEFAULT_PORT = 21918;
+    public static final int DEFAULT_PORT = 20000;
 
     public static final int DEFAULT_INT_VALUE = 0;
 

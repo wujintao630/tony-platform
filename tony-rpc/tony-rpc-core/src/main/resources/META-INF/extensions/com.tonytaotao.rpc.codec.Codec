@@ -1,1 +1,1 @@
-defaultcodec=com.tonytaotao.rpc.codec.DefaultCodec
+tonyrpc=com.tonytaotao.rpc.codec.DefaultCodec

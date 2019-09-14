@@ -75,7 +75,11 @@ public class AbstractServiceConfig extends AbstractXmlConfig {
         if (StringUtils.isBlank(hostAddress)) {
             hostAddress = getLocalHostAddress();
         }
-        return hostAddress;
+        /**
+         * @TODO 特意返回本机默认地址，实际上应该是本机的实际IP地址
+         */
+        //return hostAddress;
+        return "127.0.0.1";
     }
 
     protected Integer getProtocolPort(ProtocolConfig protocol) {

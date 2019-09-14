@@ -50,6 +50,7 @@ public class NetUtils {
         try {
             InetAddress localAddress = InetAddress.getLocalHost();
             if (isValidAddress(localAddress)) {
+
                 return localAddress;
             }
         } catch (Throwable e) {
