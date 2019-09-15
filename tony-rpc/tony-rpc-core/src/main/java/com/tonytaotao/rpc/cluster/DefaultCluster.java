@@ -16,20 +16,22 @@ import com.tonytaotao.rpc.registry.ServiceCommon;
 import com.tonytaotao.rpc.core.reference.Reference;
 import com.tonytaotao.rpc.protocol.Protocol;
 import com.tonytaotao.rpc.registry.SpiRegistry;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private List<URL> registryUrls;
+
     private URL url;
+
     private Class<T> interfaceClass;
+
     private Protocol protocol;
 
     private HaStrategy<T> haStrategy;
@@ -59,16 +61,16 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
             try {
                 notify(ru, registry.discover(subscribeUrl));
             } catch (Exception e) {
-                logger.error(String.format("Cluster init discover for the reference:%s, registry:%s", this.url, ru), e);
+                log.error(String.format("Cluster init discover for the reference:%s, registry:%s", this.url, ru), e);
             }
             // client 注册自己，同时订阅service列表
             registry.subscribe(subscribeUrl, this);
         }
 
-        logger.info("Cluster init over, url:{}, references size:{}", url, references!=null ? references.size():0);
-        boolean check = Boolean.parseBoolean(url.getParameter(UrlParamEnum.check.getName(), UrlParamEnum.check.getValue()));
+        log.info("Cluster init over, url:{}, references size:{}", url, references!=null ? references.size():0);
+        boolean check = Boolean.parseBoolean(url.getStrParameterByEnum(UrlParamEnum.check));
         if(CollectionUtils.isEmpty(references)) {
-            logger.warn(String.format("Cluster No service urls for the reference:%s, registries:%s", this.url, registryUrls));
+            log.warn(String.format("Cluster No service urls for the reference:%s, registries:%s", this.url, registryUrls));
             if(check) {
                 throw new FrameworkRpcException(String.format("Cluster No service urls for the reference:%s, registries:%s", this.url, registryUrls));
             }
@@ -85,7 +87,7 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
                 registry.unsubscribe(subscribeUrl, this);
                 registry.unregister(url);
             } catch (Exception e) {
-                logger.warn(String.format("Unregister or unsubscribe false for url (%s), registry= %s", url, ru), e);
+                log.warn(String.format("Unregister or unsubscribe false for url (%s), registry= %s", url, ru), e);
             }
         }
         if(references!=null) {
@@ -161,11 +163,11 @@ public class DefaultCluster<T> implements Cluster<T>, NotifyListener {
     @Override
     public synchronized void notify(URL registryUrl, List<URL> urls) {
         if (CollectionUtils.isEmpty(urls)) {
-            logger.warn("Cluster config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(), url, urls);
+            log.warn("Cluster config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(), url, urls);
             return;
         }
 
-        logger.info("Cluster config change notify: registry={} service={} urls={}", registryUrl.getUri(), url, urls);
+        log.info("Cluster config change notify: registry={} service={} urls={}", registryUrl.getUri(), url, urls);
 
         List<Reference<T>> newReferences = new ArrayList<>();
         for (URL u : urls) {

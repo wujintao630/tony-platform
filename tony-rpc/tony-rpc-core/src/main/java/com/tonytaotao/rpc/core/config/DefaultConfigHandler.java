@@ -29,8 +29,8 @@ public class DefaultConfigHandler implements ConfigHandler {
     @Override
     public <T> Cluster<T> buildCluster(Class<T> interfaceClass, URL refUrl, List<URL> registryUrls) {
         DefaultCluster<T> cluster = new DefaultCluster(interfaceClass, refUrl, registryUrls);
-        String loadBalanceName = refUrl.getParameter(UrlParamEnum.loadBalance.getName(), UrlParamEnum.loadBalance.getValue());
-        String haStrategyName = refUrl.getParameter(UrlParamEnum.haStrategy.getName(), UrlParamEnum.haStrategy.getValue());
+        String loadBalanceName = refUrl.getStrParameterByEnum(UrlParamEnum.loadBalance);
+        String haStrategyName = refUrl.getStrParameterByEnum(UrlParamEnum.haStrategy);
         LoadBalance<T> loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(loadBalanceName);
         HaStrategy<T> ha = ExtensionLoader.getExtensionLoader(HaStrategy.class).getExtension(haStrategyName);
         cluster.setLoadBalance(loadBalance);
@@ -49,7 +49,7 @@ public class DefaultConfigHandler implements ConfigHandler {
     @Override
     public <T> Exporter<T> export(Class<T> interfaceClass, T ref, URL serviceUrl, List<URL> registryUrls) {
 
-        String protocolName = serviceUrl.getParameter(UrlParamEnum.protocol.getName(), UrlParamEnum.protocol.getValue());
+        String protocolName = serviceUrl.getStrParameterByEnum(UrlParamEnum.protocol);
         Provider<T> provider = new DefaultRpcProvider<T>(ref, serviceUrl, interfaceClass);
         Protocol protocol = new ProtocolFilterWrapper(ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(protocolName));
         Exporter<T> exporter = protocol.export(provider, serviceUrl);

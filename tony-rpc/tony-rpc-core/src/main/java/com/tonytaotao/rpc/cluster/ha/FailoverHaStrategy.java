@@ -20,7 +20,7 @@ public class FailoverHaStrategy<T> implements HaStrategy<T> {
     public Response call(Request request, LoadBalance loadBalance) {
         Reference<T> reference = loadBalance.select(request);
         URL refUrl = reference.getUrl();
-        int tryCount = refUrl.getIntParameter(UrlParamEnum.retries.getName(), UrlParamEnum.retries.getIntValue());
+        int tryCount = refUrl.getIntParameterByEnum(UrlParamEnum.retries);
         if(tryCount<0){
             tryCount = 0;
         }

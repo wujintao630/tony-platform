@@ -43,7 +43,7 @@ public class AbstractServiceConfig extends AbstractXmlConfig {
                     protocol = Constants.REGISTRY_PROTOCOL_LOCAL;
                 }
                 Map<String, String> map = new HashMap<>();
-                map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getValue());
+                map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getDefaultValue());
                 map.put(UrlParamEnum.path.getName(), ServiceCommon.class.getName());
                 map.put(UrlParamEnum.registryAddress.getName(), String.valueOf(address));
                 map.put(UrlParamEnum.registryProtocol.getName(), String.valueOf(protocol));

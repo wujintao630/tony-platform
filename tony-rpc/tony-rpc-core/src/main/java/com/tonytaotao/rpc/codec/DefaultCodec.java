@@ -1,6 +1,5 @@
 package com.tonytaotao.rpc.codec;
 
-import com.tonytaotao.rpc.codec.Codec;
 import com.tonytaotao.rpc.common.Constants;
 import com.tonytaotao.rpc.common.URL;
 import com.tonytaotao.rpc.common.UrlParamEnum;
@@ -18,14 +17,14 @@ public class DefaultCodec implements Codec {
 
     @Override
     public byte[] encode(URL url, Object message) throws IOException {
-        String serialization = url.getParameter(UrlParamEnum.serialization.getName(), UrlParamEnum.serialization.getValue());
+        String serialization = url.getStrParameterByEnum(UrlParamEnum.serialization);
         logger.info("Codec encode serialization:{}", serialization);
         return serialize(message, ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(serialization));
     }
 
     @Override
     public Object decode(URL url, byte messageType, byte[] data) throws IOException {
-        String serialization = url.getParameter(UrlParamEnum.serialization.getName(), UrlParamEnum.serialization.getValue());
+        String serialization = url.getStrParameterByEnum(UrlParamEnum.serialization);
         logger.info("Codec decode serialization:{}", serialization);
         if(messageType == Constants.FLAG_REQUEST) {
             return deserialize(data, DefaultRequest.class, ExtensionLoader.getExtensionLoader(Serializer.class).getExtension(serialization));

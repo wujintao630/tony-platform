@@ -1,9 +1,6 @@
 package com.tonytaotao.rpc.common;
 
 import com.tonytaotao.rpc.common.exception.FrameworkRpcException;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -45,33 +42,38 @@ public class URL {
     }
 
     public String getVersion() {
-        return getParameter(UrlParamEnum.version.getName(), UrlParamEnum.version.getValue());
+        return getStrParameterByEnum(UrlParamEnum.version);
     }
 
     public String getGroup() {
-        return getParameter(UrlParamEnum.group.getName(), UrlParamEnum.group.getValue());
+        return getStrParameterByEnum(UrlParamEnum.group);
     }
 
-    public String getParameter(String name) {
+    public String getStrParameter(String name) {
         return parameterMap.get(name);
     }
 
-    public String getParameter(String name, String defaultValue) {
-        String value = getParameter(name);
+    public String getStrParameterByEnum(UrlParamEnum paramEnum) {
+        String value = getStrParameter(paramEnum.getName());
         if (value == null) {
-            return defaultValue;
+            return paramEnum.getDefaultValue();
         }
         return value;
     }
 
-    public Integer getIntParameter(String name, int defaultValue) {
-        String value = parameterMap.get(name);
+    public Integer getIntParameterByEnum(UrlParamEnum paramEnum) {
+        String value = getStrParameter(paramEnum.getName());
         if (value == null || value.length() == 0) {
-            return defaultValue;
+            return paramEnum.getIntValue();
         }
         return Integer.parseInt(value);
     }
 
+    /**
+     * 是否可以提供服务
+     * @param refUrl
+     * @return
+     */
     public boolean canServe(URL refUrl) {
         if (refUrl == null || !this.getPath().equals(refUrl.getPath())) {
             return false;
@@ -81,14 +83,14 @@ public class URL {
             return false;
         }
 
-        String version = getParameter(UrlParamEnum.version.getName(), UrlParamEnum.version.getValue());
-        String refVersion = refUrl.getParameter(UrlParamEnum.version.getName(), UrlParamEnum.version.getValue());
+        String version = getStrParameterByEnum(UrlParamEnum.version);
+        String refVersion = refUrl.getStrParameterByEnum(UrlParamEnum.version);
         if (!version.equals(refVersion)) {
             return false;
         }
         // check serialize
-        String serialize = getParameter(UrlParamEnum.serialization.getName(), UrlParamEnum.serialization.getValue());
-        String refSerialize = refUrl.getParameter(UrlParamEnum.serialization.getName(), UrlParamEnum.serialization.getValue());
+        String serialize = getStrParameterByEnum(UrlParamEnum.serialization);
+        String refSerialize = refUrl.getStrParameterByEnum(UrlParamEnum.serialization);
         if (!serialize.equals(refSerialize)) {
             return false;
         }

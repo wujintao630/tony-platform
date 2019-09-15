@@ -8,7 +8,7 @@
 <configuration status="warn" monitorInterval="30">
 
     <properties>
-        <property name="filePath" value="/logs/service-producer" />
+        <property name="filePath" defaultValue="/logs/service-producer" />
     </properties>
 
     <!--先定义所有的appender-->

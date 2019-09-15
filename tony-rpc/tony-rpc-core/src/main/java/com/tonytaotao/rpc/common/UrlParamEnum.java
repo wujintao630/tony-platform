@@ -40,40 +40,29 @@ public enum UrlParamEnum {
     codec("codec", Constants.FRAMEWORK_NAME);
 
     private String name;
-    private String value;
-    private long longValue;
+    private String defaultValue;
     private int intValue;
     private boolean boolValue;
 
-    UrlParamEnum(String name, String value) {
+    UrlParamEnum(String name, String defaultValue) {
         this.name = name;
-        this.value = value;
-    }
-
-    UrlParamEnum(String name, long longValue) {
-        this.name = name;
-        this.value = String.valueOf(longValue);
-        this.longValue = longValue;
+        this.defaultValue = defaultValue;
     }
 
     UrlParamEnum(String name, int intValue) {
         this.name = name;
-        this.value = String.valueOf(intValue);
+        this.defaultValue = String.valueOf(intValue);
         this.intValue = intValue;
     }
 
     UrlParamEnum(String name, boolean boolValue) {
         this.name = name;
-        this.value = String.valueOf(boolValue);
+        this.defaultValue = String.valueOf(boolValue);
         this.boolValue = boolValue;
     }
 
     public String getName() {
         return name;
-    }
-
-    public long getLongValue() {
-        return longValue;
     }
 
     public int getIntValue() {
@@ -84,7 +73,7 @@ public enum UrlParamEnum {
         return boolValue;
     }
 
-    public String getValue() {
-        return value;
+    public String getDefaultValue() {
+        return defaultValue;
     }
 }

@@ -60,13 +60,13 @@ public class DefaultNettyClient implements NettyClient {
         this.url = url;
         this.remoteAddress = new InetSocketAddress(url.getHost(), url.getPort());
 
-        this.timeout = url.getIntParameter(UrlParamEnum.requestTimeout.getName(), UrlParamEnum.requestTimeout.getIntValue());
+        this.timeout = url.getIntParameterByEnum(UrlParamEnum.requestTimeout);
 
         this.scheduledExecutorService = new ScheduledThreadPoolExecutor(5, new DefaultThreadFactory(String.format("%s-%s", Constants.FRAMEWORK_NAME, "future")));
 
         this.scheduledExecutorService.scheduleAtFixedRate(() -> { scanRpcFutureTable(); }, 0, 5000, TimeUnit.MILLISECONDS);
 
-        this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getParameter(UrlParamEnum.codec.getName(), UrlParamEnum.codec.getValue()));
+        this.codec = ExtensionLoader.getExtensionLoader(Codec.class).getExtension(url.getStrParameterByEnum(UrlParamEnum.codec));
 
         log.info("NettyClient init url:" + url.getHost() + "-" + url.getPath() + ", use codec:" + codec.getClass().getSimpleName());
     }
@@ -96,13 +96,13 @@ public class DefaultNettyClient implements NettyClient {
         }
 
         // 最大响应包限制
-        final int maxContentLength = url.getIntParameter(UrlParamEnum.maxContentLength.getName(), UrlParamEnum.maxContentLength.getIntValue());
+        final int maxContentLength = url.getIntParameterByEnum(UrlParamEnum.maxContentLength);
 
         b.group(group).channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.SO_RCVBUF, url.getIntParameter(UrlParamEnum.bufferSize.getName(), UrlParamEnum.bufferSize.getIntValue()))
-                .option(ChannelOption.SO_SNDBUF, url.getIntParameter(UrlParamEnum.bufferSize.getName(), UrlParamEnum.bufferSize.getIntValue()))
+                .option(ChannelOption.SO_RCVBUF, url.getIntParameterByEnum(UrlParamEnum.bufferSize))
+                .option(ChannelOption.SO_SNDBUF, url.getIntParameterByEnum(UrlParamEnum.bufferSize))
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws Exception {
