@@ -64,8 +64,8 @@ public class ${table.controllerName} {
      * @param id
      * @return
     */
-    @ApiOperation(defaultValue = "获取${table.comment}详细信息", notes = "根据url的id来获取${table.comment}详细信息")
-    @ApiImplicitParam(name = "id", defaultValue = "${table.comment}ID", required = true, dataType = "Long", paramType = "Path")
+    @ApiOperation(value = "获取${table.comment}详细信息", notes = "根据url的id来获取${table.comment}详细信息")
+    @ApiImplicitParam(name = "id", value = "${table.comment}ID", required = true, dataType = "Long", paramType = "Path")
     @GetMapping("/get${entity}Detail/{id}")
     public GlobalResult<${entity}> get${entity}DetailById(@PathVariable Long id) {
         return new GlobalResult<>(service.selectById(id));
@@ -76,9 +76,9 @@ public class ${table.controllerName} {
      * @param query
      * @return
      */
-    @ApiOperation(defaultValue = "分页获取${table.comment}详细信息，带上查询条件", notes = "根据查询条件分页获取${table.comment}明细")
+    @ApiOperation(value = "分页获取${table.comment}详细信息，带上查询条件", notes = "根据查询条件分页获取${table.comment}明细")
     @PostMapping("/get${entity}Page")
-    public GlobalResult<Page<List<${entity}>>> get${entity}Page(@RequestBody @ApiParam(defaultValue = "查询条件json对象", required = true) QueryPage<${entity}> query) {
+    public GlobalResult<Page<List<${entity}>>> get${entity}Page(@RequestBody @ApiParam(value = "查询条件json对象", required = true) QueryPage<${entity}> query) {
         Page page = service.selectPage(query.getPage(), new EntityWrapper<>(query.getQueryEntity()));
         return new GlobalResult<>(page);
     }
@@ -88,8 +88,8 @@ public class ${table.controllerName} {
      * @param entity
      *@return
     */
-    @ApiOperation(defaultValue = "新增或者更新${table.comment}信息", notes = "新增或者更新${table.comment}信息")
-    @ApiImplicitParam(name = "entity", defaultValue = "要保存的json对象", required = true, paramType = "body", dataType = "${entity}")
+    @ApiOperation(value = "新增或者更新${table.comment}信息", notes = "新增或者更新${table.comment}信息")
+    @ApiImplicitParam(name = "entity", value = "要保存的json对象", required = true, paramType = "body", dataType = "${entity}")
     @PostMapping("/saveOrUpdate${entity}")
     public GlobalResult saveOrUpdate${entity}(@RequestBody ${entity} entity) {
         service.saveOrUpdate${entity}(entity);
@@ -101,8 +101,8 @@ public class ${table.controllerName} {
      * @param id
      * @return
      */
-    @ApiOperation(defaultValue = "删除${table.comment}信息", notes = "根据url的id来删除${table.comment}信息")
-    @ApiImplicitParam(name = "id", defaultValue = "${table.comment}ID", required = true, dataType = "Long", paramType = "Path")
+    @ApiOperation(value = "删除${table.comment}信息", notes = "根据url的id来删除${table.comment}信息")
+    @ApiImplicitParam(name = "id", value = "${table.comment}ID", required = true, dataType = "Long", paramType = "Path")
     @DeleteMapping("/delete${entity}ById/{id}")
     public GlobalResult<Boolean> delete${entity}ById(@PathVariable Long id) {
         return new GlobalResult<>(service.delete${entity}ById(id));
