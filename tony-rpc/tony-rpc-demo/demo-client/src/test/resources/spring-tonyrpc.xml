@@ -13,7 +13,7 @@
 
     <tonyrpc:application name="rpc-demo" />
     <tonyrpc:protocol name="tonyrpc" port="20000" />
-    <tonyrpc:registry protocol="zookeeper" address="127.0.0.1:2181" connect-timeout="5000" />
+    <tonyrpc:registry protocol="zookeeper" address="192.168.56.101:2181" connect-timeout="5000" />
 
     <tonyrpc:reference id="demoService" interface="com.tonytaotao.rpc.demo.api.DemoService" />
 
