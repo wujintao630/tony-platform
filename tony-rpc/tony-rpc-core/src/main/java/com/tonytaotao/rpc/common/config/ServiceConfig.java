@@ -66,18 +66,18 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
     private void doExport(ProtocolConfig protocol, List<URL> registryUrls) {
         String protocolName = protocol.getName();
         if (protocolName == null || protocolName.length() == 0) {
-            protocolName = UrlParamEnum.protocol.getValue();
+            protocolName = UrlParamEnum.protocol.getDefaultValue();
         }
 
         Integer port = getProtocolPort(protocol);
         String hostAddress = getLocalHostAddress(protocol);
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getValue());
-        map.put(UrlParamEnum.version.getName(), StringUtils.isNotEmpty(version) ? version : UrlParamEnum.version.getValue());
-        map.put(UrlParamEnum.group.getName(), StringUtils.isNotEmpty(group) ? group : UrlParamEnum.group.getValue());
-        map.put(UrlParamEnum.serialization.getName(), StringUtils.isNotEmpty(protocol.getSerialization()) ? protocol.getSerialization(): UrlParamEnum.serialization.getValue());
-        map.put(UrlParamEnum.requestTimeout.getName(), timeout!=null ? timeout.toString() : UrlParamEnum.requestTimeout.getValue());
+        map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getDefaultValue());
+        map.put(UrlParamEnum.version.getName(), StringUtils.isNotEmpty(version) ? version : UrlParamEnum.version.getDefaultValue());
+        map.put(UrlParamEnum.group.getName(), StringUtils.isNotEmpty(group) ? group : UrlParamEnum.group.getDefaultValue());
+        map.put(UrlParamEnum.serialization.getName(), StringUtils.isNotEmpty(protocol.getSerialization()) ? protocol.getSerialization(): UrlParamEnum.serialization.getDefaultValue());
+        map.put(UrlParamEnum.requestTimeout.getName(), timeout!=null ? timeout.toString() : UrlParamEnum.requestTimeout.getDefaultValue());
         map.put(UrlParamEnum.side.getName(), Constants.PROVIDER);
         map.put(UrlParamEnum.timestamp.getName(), String.valueOf(System.currentTimeMillis()));
 

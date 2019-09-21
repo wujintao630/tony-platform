@@ -67,10 +67,10 @@ public class ReferenceConfig<T> extends AbstractServiceConfig {
         for(ProtocolConfig protocol : protocols) {
 
             Map<String, String> map = new HashMap<>();
-            map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getValue());
-            map.put(UrlParamEnum.serialization.getName(), StringUtils.isNotEmpty(protocol.getSerialization()) ? protocol.getSerialization(): UrlParamEnum.serialization.getValue());
-            map.put(UrlParamEnum.version.getName(), StringUtils.isNotEmpty(version) ? version : UrlParamEnum.version.getValue());
-            map.put(UrlParamEnum.group.getName(), StringUtils.isNotEmpty(group) ? group : UrlParamEnum.group.getValue());
+            map.put(UrlParamEnum.application.getName(), StringUtils.isNotEmpty(application.getName()) ? application.getName() : UrlParamEnum.application.getDefaultValue());
+            map.put(UrlParamEnum.serialization.getName(), StringUtils.isNotEmpty(protocol.getSerialization()) ? protocol.getSerialization(): UrlParamEnum.serialization.getDefaultValue());
+            map.put(UrlParamEnum.version.getName(), StringUtils.isNotEmpty(version) ? version : UrlParamEnum.version.getDefaultValue());
+            map.put(UrlParamEnum.group.getName(), StringUtils.isNotEmpty(group) ? group : UrlParamEnum.group.getDefaultValue());
             map.put(UrlParamEnum.side.getName(), Constants.CONSUMER);
             map.put(UrlParamEnum.requestTimeout.getName(), String.valueOf(getTimeout()));
             map.put(UrlParamEnum.timestamp.getName(), String.valueOf(System.currentTimeMillis()));
@@ -83,7 +83,7 @@ public class ReferenceConfig<T> extends AbstractServiceConfig {
 
             clusters.add(configHandler.buildCluster(interfaceClass, refUrl, registryUrls));
 
-            proxyType = refUrl.getParameter(UrlParamEnum.proxyType.getName(), UrlParamEnum.proxyType.getValue());
+            proxyType = refUrl.getStrParameterByEnum(UrlParamEnum.proxyType);
         }
 
         this.proxy = configHandler.refer(interfaceClass, clusters, proxyType);

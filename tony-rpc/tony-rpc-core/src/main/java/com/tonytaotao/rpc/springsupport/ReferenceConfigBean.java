@@ -8,8 +8,6 @@ import com.tonytaotao.rpc.common.util.FrameworkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 
@@ -48,10 +46,10 @@ public class ReferenceConfigBean<T> extends ReferenceConfig<T> implements Factor
         checkRegistryConfig();
 
         if(StringUtils.isEmpty(getGroup())) {
-            setGroup(UrlParamEnum.group.getValue());
+            setGroup(UrlParamEnum.group.getDefaultValue());
         }
         if(StringUtils.isEmpty(getVersion())) {
-            setVersion(UrlParamEnum.version.getValue());
+            setVersion(UrlParamEnum.version.getDefaultValue());
         }
 
         if(getTimeout()==null) {

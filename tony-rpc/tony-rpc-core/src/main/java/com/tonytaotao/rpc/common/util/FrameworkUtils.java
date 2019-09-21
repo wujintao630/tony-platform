@@ -43,8 +43,8 @@ public class FrameworkUtils {
     }
 
     public static String getServiceKey(Request request) {
-        String version = getValueFromRequest(request, UrlParamEnum.version.name(), UrlParamEnum.version.getValue());
-        String group = getValueFromRequest(request, UrlParamEnum.group.name(), UrlParamEnum.group.getValue());
+        String version = getValueFromRequest(request, UrlParamEnum.version.name(), UrlParamEnum.version.getDefaultValue());
+        String group = getValueFromRequest(request, UrlParamEnum.group.name(), UrlParamEnum.group.getDefaultValue());
 
         return getServiceKey(group, request.getInterfaceName(), version);
     }

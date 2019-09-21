@@ -45,9 +45,9 @@ public class ZookeeperRegistry implements SpiRegistry {
 
     private ServiceCommon createRegistry(URL registryUrl) {
         try {
-            int connecttTimeout = registryUrl.getIntParameter(UrlParamEnum.registryConnectTimeout.getName(), UrlParamEnum.registryConnectTimeout.getIntValue());
-            int sessionTimeout = registryUrl.getIntParameter(UrlParamEnum.registrySessionTimeout.getName(), UrlParamEnum.registrySessionTimeout.getIntValue());
-            ZkClient zkClient = new ZkClient(registryUrl.getParameter(UrlParamEnum.registryAddress.getName()), sessionTimeout, connecttTimeout);
+            int connecttTimeout = registryUrl.getIntParameterByEnum(UrlParamEnum.registryConnectTimeout);
+            int sessionTimeout = registryUrl.getIntParameterByEnum(UrlParamEnum.registrySessionTimeout);
+            ZkClient zkClient = new ZkClient(registryUrl.getStrParameter(UrlParamEnum.registryAddress.getName()), sessionTimeout, connecttTimeout);
             return new ZookeeperRegistryFactory(registryUrl, zkClient);
         } catch (ZkException e) {
             throw e;
