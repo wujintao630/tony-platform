@@ -19,8 +19,8 @@ spring:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/springcloud_service_producer?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=UTF8&serverTimezone=GMT
-      username: dev
-      password: dev123456
+      username: root
+      password: 123456
 
       #连接池配置
       #初始化创建的连接数
@@ -52,8 +52,8 @@ spring:
       #结果显示为  privateKey:xxxxxx
       #           publicKey:xxxxxx
       #           password:xxxxxx
-      #则在spring.datasource.druid.password填入生成的密码，然后设置config.decrypt=true,configs.decrypt.key=${publicKey}
-      connection-properties: configs.decrypt=false;configs.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAITzkOZ5i2VFAQkofoL6kD8yjnvu00bO+o08NJHp8Qb7YX5uB1i8gqPAk6t+Qn0Tle57cRiIzfpG1hNS+42aBksCAwEAAQ==
+      #则在spring.datasource.druid.password填入生成的密码，然后设置config.decrypt=true,config.decrypt.key=${publicKey}
+      connection-properties: config.decrypt=false;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAITzkOZ5i2VFAQkofoL6kD8yjnvu00bO+o08NJHp8Qb7YX5uB1i8gqPAk6t+Qn0Tle57cRiIzfpG1hNS+42aBksCAwEAAQ==
       #关联spring监控，多个用逗号隔开，如果代理的类没有定义interface,则需要设置spring.interceptor.proxy-target-class=true
       aop-patterns: com.tonytaotao.service.producer.*.service.impl.*
 
