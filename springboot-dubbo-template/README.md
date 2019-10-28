@@ -12,6 +12,6 @@
 
 ##ps
 ####1、若要用于生产，请提前确认相关环境是否兼容springboot2.x,例如：网关
-####2、由于tx-lcn对于dubbo使用的是2.6.x的版本，为了兼容tx-lcn，统一使用2.6.7版本，前缀为com.alibaba, 而2.7.x版本的为 org.apache.dubbo
+####2、由于tx-lcn 5.x版本目前对于dubbo使用的是2.6.x的版本，为了兼容tx-lcn，统一使用2.6.7版本，前缀为com.alibaba, 而2.7.x版本的为 org.apache.dubbo
 
  
