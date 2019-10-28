@@ -1,0 +1,50 @@
+server:
+  port: 7970
+
+spring:
+  application:
+    name: template-tx-manager
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tx-manager?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=UTF8&serverTimezone=GMT
+    username: root
+    password: 123456
+  redis:
+    database: 0
+    host: 192.168.56.101
+    port: 6379
+    timeout: 5000
+    lettuce:
+      pool:
+        min-idle: 10
+        max-idle: 20
+        max-active: 100
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+
+tx-lcn:
+  manager:
+    host: 127.0.0.1
+    port: 5800
+    heart-time: 15000
+    dtx-time: 5000
+    concurrent-level: 128
+    admin-key: 123456
+  message:
+    netty:
+      attr-delay-time: 10000
+  logger:
+    enabled: true
+    driver-class-name: ${spring.datasource.driver-class-name}
+    jdbc-url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+
+#日志配置
+logging:
+  config: classpath:logConfig/log4j2-dev.xml
+
+

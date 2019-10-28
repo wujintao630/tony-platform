@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <name>springboot-dubbo-template</name>
-    <description>rest-rpc模版</description>
+    <description>springboot+dubbo模版，集成分布式服务</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,8 +27,11 @@
 
     <modules>
         <module>template-api</module>
-        <module>template-consumer</module>
-        <module>template-provider</module>
+        <module>template-order</module>
+        <module>template-account</module>
+        <module>template-commodity</module>
+        <module>template-common</module>
+        <module>template-tx-manager</module>
     </modules>
 
 </project>
