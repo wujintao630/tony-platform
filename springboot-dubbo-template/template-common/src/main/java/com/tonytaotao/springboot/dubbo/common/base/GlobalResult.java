@@ -44,8 +44,12 @@ public class GlobalResult<T> {
     }
 
     public static GlobalResult DefaultFailure(String msg) {
+        return DefaultFailure("-1", msg);
+    }
+
+    public static GlobalResult DefaultFailure(String code, String msg) {
         GlobalResult globalResult = new GlobalResult();
-        globalResult.setCode("-1");
+        globalResult.setCode(code);
         globalResult.setMsg(msg);
         return globalResult;
     }

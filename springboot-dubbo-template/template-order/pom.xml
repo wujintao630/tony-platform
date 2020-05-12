@@ -9,7 +9,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.tonytaotao</groupId>
     <artifactId>template-order</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>

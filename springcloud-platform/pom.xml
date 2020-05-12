@@ -218,6 +218,7 @@
    <modules>
 
        <module>eureka-center</module>
+       <module>gateway-center</module>
        <module>zuul-center</module>
        <module>hystrix-turbine-center</module>
        <module>zipkin-center</module>
