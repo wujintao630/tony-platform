@@ -1,0 +1,13 @@
+server:
+  port: 9005
+  servlet:
+    context-path: /docker
+
+spring:
+  application:
+    name: template-docker
+
+#日志配置
+logging:
+  config: classpath:logConfig/log4j2-dev.xml
+
