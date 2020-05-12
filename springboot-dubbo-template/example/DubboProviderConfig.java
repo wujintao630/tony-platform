@@ -1,6 +1,5 @@
 package com.tonytaotao.springboot.dubbo.common.config;
 
-import com.alibaba.dubbo.config.*;
 import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
 import org.springframework.context.annotation.Bean;
