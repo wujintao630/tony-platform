@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * 分页查询实体
- * @author wujintao
+ * @author tonytaotao
  */
 @Data
 public class QueryPage<T> {

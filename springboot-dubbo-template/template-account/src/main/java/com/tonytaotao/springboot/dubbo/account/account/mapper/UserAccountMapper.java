@@ -8,7 +8,7 @@ import com.tonytaotao.springboot.dubbo.account.account.entity.UserAccount;
  *  Mapper 接口
  * </p>
  *
- * @author wujintao
+ * @author tonytaotao
  * @since 2019-10-22
  */
 public interface UserAccountMapper extends BaseMapper<UserAccount> {

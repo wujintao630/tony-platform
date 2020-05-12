@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * 全局ID生成器
- * @author wujintao
+ * @author tonytaotao
  */
 public class GlobalIDHandler {
 

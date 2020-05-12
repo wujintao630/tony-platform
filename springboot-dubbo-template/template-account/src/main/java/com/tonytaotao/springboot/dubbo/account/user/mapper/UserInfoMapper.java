@@ -8,7 +8,7 @@ import com.tonytaotao.springboot.dubbo.account.user.entity.UserInfo;
  *  Mapper 接口
  * </p>
  *
- * @author wujintao
+ * @author tonytaotao
  * @since 2019-10-25
  */
 public interface UserInfoMapper extends BaseMapper<UserInfo> {

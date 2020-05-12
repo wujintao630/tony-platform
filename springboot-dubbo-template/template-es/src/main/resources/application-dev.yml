@@ -1,0 +1,13 @@
+server:
+  port: 9004
+  servlet:
+    context-path: /es
+
+spring:
+  application:
+    name: template-es
+
+#日志配置
+logging:
+  config: classpath:logConfig/log4j2-dev.xml
+

@@ -14,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Swagger接口文档配置
  * http://ip:port/context-path/swagger-ui.html
- * @author wujintao
+ * @author tonytaotao
  */
 @Configuration
 @EnableSwagger2

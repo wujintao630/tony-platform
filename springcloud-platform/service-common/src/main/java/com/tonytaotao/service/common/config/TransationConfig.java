@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * 全局事务配置(申明式)
- * @author wujintao
+ * @author tonytaotao
  */
 @Aspect
 @Configuration

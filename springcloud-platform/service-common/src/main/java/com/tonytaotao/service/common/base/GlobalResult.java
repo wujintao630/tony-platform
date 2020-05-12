@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * 全局结果返回
- * @author wujintao
+ * @author tonytaotao
  */
 @Data
 public class GlobalResult<T> {

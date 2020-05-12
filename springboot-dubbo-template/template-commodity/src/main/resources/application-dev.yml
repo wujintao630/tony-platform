@@ -142,7 +142,7 @@ dubbo:
     name: dubbo
     port: 20880
   registry:
-    address: zookeeper://192.168.56.101:2181
+    address: nacos://192.168.56.101:8848  #zookeeper://192.168.56.101:2181
   consumer:
     timeout: 1000
   provider:
