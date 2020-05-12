@@ -1,4 +1,4 @@
-package com.tonytaotao.leetcode;
+package com.tonytaotao.algorithm;
 
 /**
  * 给出两个 非空 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
@@ -13,9 +13,9 @@ package com.tonytaotao.leetcode;
  * 输出：7 -> 0 -> 8
  * 原因：342 + 465 = 807
  */
-public class LC0002AddTwoNumbers {
+public class LC0002 {
 
-    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode rn = l1;
 
         while (true) {
@@ -70,20 +70,27 @@ public class LC0002AddTwoNumbers {
         n5.next = n4;
         n6.next = n5;
 
-        ListNode result = addTwoNumbers(n3, n6);
+        ListNode result = new LC0002().addTwoNumbers(n3, n6);
 
         System.out.println(result);
 
     }
 
-}
 
-class ListNode {
-    int val;
-    ListNode next;
+    static class ListNode {
+        int val;
+        ListNode next;
 
-    public ListNode(int val) {
-        this.val = val;
+        public ListNode(int val) {
+            this.val = val;
+        }
+
     }
 
+
+
 }
+
+
+
+

@@ -1,4 +1,4 @@
-package com.tonytaotao.base.algorithm;
+package com.tonytaotao.algorithm;
 
 /**
  * 斐波拉契数列求和

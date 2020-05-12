@@ -1,11 +1,11 @@
-package com.tonytaotao.base.sort;
+package com.tonytaotao.algorithm;
 
 /**
  * 归并排序
  * @author tonytaotao
  * 
  */
-public class MergeSortTest {
+public class SortMerge {
 
 	public static void main(String[] args) {
 

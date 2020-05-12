@@ -1,11 +1,11 @@
-package com.tonytaotao.base.sort;
+package com.tonytaotao.algorithm;
 
 /**
  * 快速排序
  * @author tonytaotao
  * 
  */
-public class QuickSortTest {
+public class SortQuick {
 
 	public static void main(String[] args) {
 

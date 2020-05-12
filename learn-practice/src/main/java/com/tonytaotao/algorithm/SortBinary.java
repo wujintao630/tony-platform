@@ -1,6 +1,6 @@
-package com.tonytaotao.base.sort;
+package com.tonytaotao.algorithm;
 
-public class BinarySortTest {
+public class SortBinary {
 	public static void main(String[] args) {
 
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };

@@ -1,4 +1,4 @@
-package com.tonytaotao.leetcode;
+package com.tonytaotao.algorithm;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.Map;
  *
  * 因为 nums[0] + nums[1] = 2 + 7 = 9  所以返回 [0, 1]
  */
-public class LC0001TwoSum {
+public class LC0001 {
 
     /**
      * @param nums
@@ -66,7 +66,7 @@ public class LC0001TwoSum {
 
         int[] nums = {1,11,6,3,10};
 
-        int[] result = new LC0001TwoSum().twoSum(nums, 13);
+        int[] result = new LC0001().twoSum(nums, 13);
 
         System.out.println(Arrays.toString(result));
     }
