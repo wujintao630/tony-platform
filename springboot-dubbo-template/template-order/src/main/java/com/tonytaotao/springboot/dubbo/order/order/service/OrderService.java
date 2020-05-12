@@ -9,7 +9,7 @@ import com.tonytaotao.springboot.dubbo.order.order.vo.PlaceOrderReq;
  *  服务接口类
  * </p>
  *
- * @author wujintao
+ * @author tonytaotao
  * @since 2019-10-25
  */
 public interface OrderService extends IService<UserOrder> {

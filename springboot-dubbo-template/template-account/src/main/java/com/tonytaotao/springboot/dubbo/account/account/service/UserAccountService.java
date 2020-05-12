@@ -8,7 +8,7 @@ import com.tonytaotao.springboot.dubbo.account.account.entity.UserAccount;
  *  服务接口类
  * </p>
  *
- * @author wujintao
+ * @author tonytaotao
  * @since 2019-10-22
  */
 public interface UserAccountService extends IService<UserAccount> {
@@ -16,4 +16,6 @@ public interface UserAccountService extends IService<UserAccount> {
     void saveOrUpdateUserAccount(UserAccount entity);
 
     Boolean deleteUserAccountById(Long id);
+
+    String test();
 }

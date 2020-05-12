@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author wujintao
+ * @author tonytaotao
  *
  * Configuration 类似于spring 配置文件，负责注册bean
  *

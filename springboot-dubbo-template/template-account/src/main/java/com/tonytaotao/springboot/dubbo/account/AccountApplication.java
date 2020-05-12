@@ -1,10 +1,14 @@
 package com.tonytaotao.springboot.dubbo.account;
 
 import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.tonytaotao.springboot.dubbo.common.config.MybatisPlusConfig;
+import com.tonytaotao.springboot.dubbo.common.config.SentinelConfig;
 import com.tonytaotao.springboot.dubbo.common.config.SwaggerConfig;
 import com.tonytaotao.springboot.dubbo.common.config.TransactionConfig;
+import com.tonytaotao.springboot.dubbo.common.filter.HttpLogFilter;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author wujintao
+ * @author tonytaotao
  *
  * Configuration 类似于spring 配置文件，负责注册bean
  *
@@ -35,16 +39,25 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan({"com.tonytaotao.springboot.dubbo.account.*.mapper"})
-@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class})
+@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class, HttpLogFilter.class, SentinelConfig.class})
 @EnableDistributedTransaction
+@NacosPropertySource(dataId = "switch", groupId = "template-account", autoRefreshed = true)
 public class AccountApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AccountApplication.class, args);
     }
 
+    @NacosValue(value = "${switch.kafka}", autoRefreshed = true)
+    private Integer switchKafka;
+
     @GetMapping("/health")
     public String health() {
         return "OK";
+    }
+
+    @GetMapping("/getSwitchKafka")
+    public Integer getSwitchKafka() {
+        return switchKafka;
     }
 }

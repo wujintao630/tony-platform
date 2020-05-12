@@ -111,8 +111,18 @@ spring:
         url-pattern: /druid/*
         reset-enable: true
         allow: 127.0.0.1
+
+  #bean覆盖
   main:
     allow-bean-definition-overriding: true
+
+  #sentinel限流
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 192.168.56.101:8080
+        port: 8719
+      eager: true
 
 
 #mybatis-plus配置
@@ -143,11 +153,17 @@ dubbo:
     name: dubbo
     port: 20881
   registry:
-    address: zookeeper://192.168.56.101:2181
+    address:  nacos://192.168.56.101:8848  #zookeeper://192.168.56.101:2181
   consumer:
     timeout: 1000
   provider:
     timeout: 1000
+
+#nacos注册配置中心
+nacos:
+  config:
+    server-addr: 192.168.56.101:8848
+    namespace: 61c64880-23bc-40f4-bf13-ad719452b0a0
 
 #分布式事务tx-lcn配置
 tx-lcn:

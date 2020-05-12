@@ -8,7 +8,7 @@ import com.tonytaotao.springboot.dubbo.commodity.commodity.entity.Commodity;
  *  服务接口类
  * </p>
  *
- * @author wujintao
+ * @author tonytaotao
  * @since 2019-10-25
  */
 public interface CommodityService extends IService<Commodity> {
