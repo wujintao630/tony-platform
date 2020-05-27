@@ -33,7 +33,6 @@
         <module>template-tx-manager</module>
         <module>template-docker</module>
         <module>template-es</module>
-        <module>template-test</module>
     </modules>
 
 </project>

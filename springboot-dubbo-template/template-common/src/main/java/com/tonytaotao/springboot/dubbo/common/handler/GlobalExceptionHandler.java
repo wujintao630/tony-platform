@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 处理全局异常（controller层抛出）
- * @author wujintao
+ * @author tonytaotao
  *
  * ControllerAdvice 和 RestControllerAdvice 区别：
  * ControllerAdvice注解后，方法上要同时存在 ExceptionHandler 和 ResponseBody 注解

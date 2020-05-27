@@ -2,7 +2,7 @@ package com.tonytaotao.springboot.dubbo.api;
 
 /**
  * RPC 账户服务
- * @author wujintao
+ * @author tonytaotao
  */
 public interface ApiAccountService {
 

@@ -7,6 +7,9 @@ spring:
   application:
     name: template-order
 
+  main:
+    allow-bean-definition-overriding: true
+
   #datasource
   datasource:
     #使用p6spy的驱动和URL前缀，可以支持标准化sql分析监控 com.p6spy.engine.spy.P6SpyDriver
@@ -111,8 +114,6 @@ spring:
         url-pattern: /druid/*
         reset-enable: true
         allow: 127.0.0.1
-  main:
-      allow-bean-definition-overriding: true
 
 #mybatis-plus配置
 mybatis-plus:

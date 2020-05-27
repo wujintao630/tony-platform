@@ -5,7 +5,6 @@ import com.alibaba.nacos.api.config.annotation.NacosValue;
 import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.tonytaotao.springboot.dubbo.common.config.MybatisPlusConfig;
-import com.tonytaotao.springboot.dubbo.common.config.SentinelConfig;
 import com.tonytaotao.springboot.dubbo.common.config.SwaggerConfig;
 import com.tonytaotao.springboot.dubbo.common.config.TransactionConfig;
 import com.tonytaotao.springboot.dubbo.common.filter.HttpLogFilter;
@@ -39,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan({"com.tonytaotao.springboot.dubbo.account.*.mapper"})
-@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class, HttpLogFilter.class, SentinelConfig.class})
+@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class, HttpLogFilter.class})
 @EnableDistributedTransaction
 @NacosPropertySource(dataId = "switch", groupId = "template-account", autoRefreshed = true)
 public class AccountApplication {

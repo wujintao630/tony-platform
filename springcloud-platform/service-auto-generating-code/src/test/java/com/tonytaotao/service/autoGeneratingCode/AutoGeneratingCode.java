@@ -22,7 +22,7 @@ public class AutoGeneratingCode {
         // 生成文件输出路径
         String outputDir = "E:\\WorkSpace\\IDEAworkspace\\tony-platform\\springcloud-platform\\service-producer\\src\\main\\java";
         // 作者
-        String authorName = "wujintao";
+        String authorName = "tonytaotao";
         // 包名全路径
         String packageNameAllPath = "com.tonytaotao.service.producer";
         // 模块名

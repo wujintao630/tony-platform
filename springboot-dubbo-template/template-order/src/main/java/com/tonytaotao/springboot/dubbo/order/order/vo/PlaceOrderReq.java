@@ -5,7 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.checkerframework.checker.units.qual.min;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -28,6 +32,7 @@ public class PlaceOrderReq implements Serializable {
      * 用户ID
      */
     @ApiModelProperty(value = "用户ID")
+    @NotNull(message = "{param.null}")
     private Long userId;
     /**
      * 商品ID
@@ -39,5 +44,12 @@ public class PlaceOrderReq implements Serializable {
      */
     @ApiModelProperty(value = "数量")
     private Integer quantity;
+
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value = "备注")
+    @Length(min = 5, max = 25, message = "{param.length}")
+    private String remark;
 
 }

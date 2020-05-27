@@ -1,18 +1,26 @@
 package com.tonytaotao.springboot.dubbo.order;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.init.InitExecutor;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.transport.config.TransportConfig;
 import com.alibaba.dubbo.config.spring.context.annotation.EnableDubbo;
 import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.tonytaotao.springboot.dubbo.common.config.MybatisPlusConfig;
 import com.tonytaotao.springboot.dubbo.common.config.SwaggerConfig;
 import com.tonytaotao.springboot.dubbo.common.config.TransactionConfig;
+import com.tonytaotao.springboot.dubbo.common.config.i18n.ValidationConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author tonytaotao
@@ -29,22 +37,60 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * EnableDistributedTransaction 开启tx-lcn分布式事务
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.tonytaotao.springboot.dubbo")
 @RestController
 @EnableDubbo
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(exposeProxy = true)
 @MapperScan({"com.tonytaotao.springboot.dubbo.order.*.mapper"})
-@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class})
+@Import({SwaggerConfig.class, MybatisPlusConfig.class, TransactionConfig.class, ValidationConfig.class})
 @EnableDistributedTransaction
 public class OrderApplication {
 
     public static void main(String[] args) {
+
+        // 连接到控制台，与sentinel控制台通信
+        System.setProperty("project.name","order");
+        System.setProperty(TransportConfig.CONSOLE_SERVER,"192.168.56.101:8080");
+        System.setProperty(TransportConfig.SERVER_PORT, "8719");
+        InitExecutor.doInit();
+
         SpringApplication.run(OrderApplication.class, args);
     }
 
     @GetMapping("/health")
     public String health() {
         return "OK";
+    }
+
+    /**
+     * 限流降级
+     * @return
+     */
+    @SentinelResource(value = "sayHello", blockHandler = "sayHelloExceptionHandler")
+    @GetMapping("/sayHello")
+    public String sayHello(String name){
+        return "hello,"+ name;
+    }
+
+    /**
+     * 熔断降级
+     * @return
+     */
+    @SentinelResource(value = "circuitBreaker", fallback = "circuitBreakerFallback", blockHandler = "sayHelloExceptionHandler")
+    @GetMapping("/circuitBreaker")
+    public String circuitBreaker(String name){
+        if ("zhangsan".equals(name)){
+            return "hello,"+ name;
+        }
+        throw new RuntimeException("发生异常");
+    }
+
+    public String circuitBreakerFallback(String name){
+        return "服务异常，熔断降级, 请稍后重试!";
+    }
+
+    public String sayHelloExceptionHandler(String name, BlockException ex){
+        return "访问过快，限流降级, 请稍后重试!";
     }
 }

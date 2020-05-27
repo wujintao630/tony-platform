@@ -1,5 +1,6 @@
 package com.tonytaotao.springboot.dubbo.order.order.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tonytaotao.springboot.dubbo.common.base.GlobalResult;
@@ -12,8 +13,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -39,7 +42,7 @@ public class OrderController {
      */
     @ApiOperation(value = "下订单", notes = "下订单")
     @PostMapping("/placeOrder")
-    public GlobalResult<Boolean> placeOrder(@RequestBody @ApiParam(value = "下单请求json对象", required = true) PlaceOrderReq placeOrderReq) {
+    public GlobalResult<Boolean> placeOrder(@RequestBody @ApiParam(value = "下单请求json对象", required = true) @Validated PlaceOrderReq placeOrderReq) {
         return new GlobalResult<>(service.placeOrder(placeOrderReq));
     }
 

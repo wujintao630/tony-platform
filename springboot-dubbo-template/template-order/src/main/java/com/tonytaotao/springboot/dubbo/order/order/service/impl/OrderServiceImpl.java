@@ -28,10 +28,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, UserOrder> implem
     /**
      * 不能使用@Autowired自动注入，而要用Dubbo提供的@Reference注解
      */
-    @Reference(interfaceClass = ApiAccountService.class, version = "1.0.0", retries = 3)
+    @Reference(interfaceClass = ApiAccountService.class, version = "1.0.0", retries = 3, check = false)
     private ApiAccountService apiAccountService;
 
-    @Reference(interfaceClass = ApiCommodityService.class, version = "1.0.0", retries = 3)
+    @Reference(interfaceClass = ApiCommodityService.class, version = "1.0.0", retries = 3, check = false)
     private ApiCommodityService apiCommodityService;
 
     @Override
@@ -54,7 +54,5 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, UserOrder> implem
 
         return result;
 
-
     }
-
 }
