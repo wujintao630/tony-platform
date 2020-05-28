@@ -1,4 +1,4 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.leecode;
 
 import java.util.Arrays;
 import java.util.HashMap;

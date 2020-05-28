@@ -1,4 +1,4 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.tree;
 
 /**
  * 二叉树
