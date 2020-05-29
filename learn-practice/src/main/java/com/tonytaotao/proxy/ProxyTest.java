@@ -9,7 +9,6 @@ public class ProxyTest {
 		try {
 			people.eat();
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

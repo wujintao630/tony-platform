@@ -33,14 +33,12 @@ public class MyClassLoader extends ClassLoader {
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}finally{
 					if(input!=null){
 						try {
 							input.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
