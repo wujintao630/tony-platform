@@ -1,10 +1,10 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.sort;
 
 /**
  * 插入排序
  * @author tonytaotao
  */
-public class SortInsert {
+public class InsertSortDemo {
 
 	public static void main(String[] args) {
 

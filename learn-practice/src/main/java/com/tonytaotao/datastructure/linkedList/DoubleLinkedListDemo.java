@@ -12,10 +12,16 @@ public class DoubleLinkedListDemo {
         DoubleLinkedList doubleLinkedList = new DoubleLinkedList();
 
 
-        doubleLinkedList.add(hero1);
+       /* doubleLinkedList.add(hero1);
         doubleLinkedList.add(hero2);
         doubleLinkedList.add(hero3);
-        doubleLinkedList.add(hero4);
+        doubleLinkedList.add(hero4);*/
+
+
+        doubleLinkedList.addByOrder(hero3);
+        doubleLinkedList.addByOrder(hero2);
+        doubleLinkedList.addByOrder(hero4);
+        doubleLinkedList.addByOrder(hero1);
 
         doubleLinkedList.list();
         System.out.println();
@@ -57,6 +63,38 @@ class DoubleLinkedList {
         // 将节点加到最后
         temp.next = doubleNode;
         doubleNode.pre = temp;
+
+    }
+
+    public void addByOrder(DoubleNode doubleNode) {
+
+        DoubleNode temp = head;
+        // 标识添加的编号是否存在
+        boolean flag = false;
+
+        while (true) {
+            if (temp.next == null) {
+                break;
+            }
+
+            if (temp.next.no > doubleNode.no) {
+                break;
+            } else if (temp.next.no == doubleNode.no) {
+                flag = true;
+                break;
+            }
+            temp = temp.next;
+        }
+
+        if (flag) {
+            System.out.printf("英雄编号%d已存在，不能插入\n", doubleNode.no);
+        } else {
+            doubleNode.next = temp.next;
+            doubleNode.pre = temp;
+            temp.next = doubleNode;
+
+
+        }
 
     }
 
@@ -129,7 +167,6 @@ class DoubleLinkedList {
                 temp.next.pre = temp.pre;
             }
 
-
         } else {
             System.out.printf("没有找到编号%d的节点\n", delDoubleNode.no);
         }
@@ -141,6 +178,7 @@ class DoubleLinkedList {
     public void list() {
         if (head.next == null) {
             System.out.println("链表为空");
+            return;
         }
 
         DoubleNode temp = head.next;

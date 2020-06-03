@@ -162,6 +162,7 @@ class SingleLinkedList {
     public void list() {
         if (head.next == null) {
             System.out.println("链表为空");
+            return;
         }
 
         SingleNode temp = head.next;

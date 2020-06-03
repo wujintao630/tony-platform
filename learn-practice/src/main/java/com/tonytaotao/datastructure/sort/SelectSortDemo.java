@@ -1,11 +1,11 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.sort;
 
 /**
  * 选择排序
  * @author tonytaotao
  * 
  */
-public class SortSelect {
+public class SelectSortDemo {
 
 	public static void main(String[] args) {
 

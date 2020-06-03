@@ -1,6 +1,10 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.sort;
 
-public class SortBinary {
+/**
+ * 二分排序
+ * @author tonytaotao
+ */
+public class BinarySortDemo {
 	public static void main(String[] args) {
 
 		int[] array = { 3, 5, 2, 4, 9, 7, 6, 8, 1, 10 };

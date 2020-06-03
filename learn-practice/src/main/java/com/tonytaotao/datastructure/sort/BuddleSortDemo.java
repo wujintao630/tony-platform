@@ -1,10 +1,10 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.sort;
 
 /**
  * 冒泡排序
  * @author tonytaotao
  */
-public class SortBuddle {
+public class BuddleSortDemo {
 
 	public static void main(String[] args) {
 

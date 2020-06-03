@@ -1,11 +1,11 @@
-package com.tonytaotao.algorithm;
+package com.tonytaotao.datastructure.sort;
 
 /**
  * 快速排序
  * @author tonytaotao
  * 
  */
-public class SortQuick {
+public class QuickSortDemo {
 
 	public static void main(String[] args) {
 
@@ -13,9 +13,7 @@ public class SortQuick {
 
 		quickSort(array, 0, array.length-1);
 
-		for (int i = 0; i < array.length; i++) {
-			System.out.print(array[i] + ",");
-		}
+		print(array);
 
 	}
 
@@ -35,6 +33,8 @@ public class SortQuick {
 					array[i]=array[j];
 					array[j]=p;
 				}
+
+				print(array);
 			}
 			array[low]=array[i];//此时i和j相遇了，则一次扫描结束，此时i=j，则在i处，i左边的比中轴值小，i右边的比中轴值要大，所以将i和初始中轴的值进行交换
 			array[i]=temp;
@@ -42,6 +42,13 @@ public class SortQuick {
 			quickSort(array,low,i-1);//此时递归进行快排
 			quickSort(array,i+1,high);
 		}
+	}
+
+	public static void print (int[] array) {
+		for (int i = 0; i < array.length; i++) {
+			System.out.print(array[i] + ",");
+		}
+		System.out.println();
 	}
 
 }
