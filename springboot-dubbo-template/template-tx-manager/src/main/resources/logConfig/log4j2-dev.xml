@@ -8,7 +8,7 @@
 <configuration status="warn" monitorInterval="60">
 
     <properties>
-        <property name="logpath" value="/logs/springboot-dubbo-template/tx-manager" />
+        <property name="logpath" value="./logs" />
     </properties>
 
     <appenders>

@@ -8,7 +8,7 @@
 <configuration status="warn" monitorInterval="60">
 
     <properties>
-        <property name="logpath" value="/logs/template-provider" />
+        <property name="logpath" value="./logs" />
     </properties>
 
     <appenders>
