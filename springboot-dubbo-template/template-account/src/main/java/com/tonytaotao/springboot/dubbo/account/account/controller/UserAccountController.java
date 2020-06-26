@@ -1,8 +1,5 @@
 package com.tonytaotao.springboot.dubbo.account.account.controller;
 
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tonytaotao.springboot.dubbo.account.account.entity.UserAccount;
@@ -16,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,28 +81,4 @@ public class UserAccountController {
         return new GlobalResult<>(service.deleteUserAccountById(id));
     }
 
-    /**
-     *获取详细信息
-     * @param id
-     * @return
-     */
-    @ApiOperation(value = "测试", notes = "测试")
-    @GetMapping("/test")
-    public GlobalResult test() {
-
-        this.initFlowQpsRule("test");
-
-        return new GlobalResult<>(service.test());
-    }
-
-    private void initFlowQpsRule(String resourceName) {
-        List<FlowRule> ruleList = new ArrayList<>();
-        FlowRule rule = new FlowRule();
-        rule.setRefResource(resourceName);
-        rule.setCount(2);
-        rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        rule.setLimitApp("template-account");
-        ruleList.add(rule);
-        FlowRuleManager.loadRules(ruleList);
-    }
 }

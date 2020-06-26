@@ -1,7 +1,7 @@
 package com.tonytaotao.algorithm;
 
 /**
- * 斐波拉契数列求和
+ * 斐波拉契数列求和 （递归）
  */
 public class Fibonacci {
 

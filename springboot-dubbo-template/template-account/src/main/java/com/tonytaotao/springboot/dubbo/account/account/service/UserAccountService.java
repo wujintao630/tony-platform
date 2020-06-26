@@ -17,5 +17,4 @@ public interface UserAccountService extends IService<UserAccount> {
 
     Boolean deleteUserAccountById(Long id);
 
-    String test();
 }

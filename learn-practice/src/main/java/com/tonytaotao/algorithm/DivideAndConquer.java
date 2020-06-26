@@ -1,12 +1,12 @@
 package com.tonytaotao.algorithm;
 
 /**
- * 汉诺塔
+ * 分治（汉诺塔）
  */
-public class Hanoi {
+public class DivideAndConquer {
 
 	public static void main(String[] args) {
-		new Hanoi().move(3, "A", "B", "C");
+		new DivideAndConquer().move(3, "A", "B", "C");
 	}
 
 	public void move(int n, String A, String B, String C) {
