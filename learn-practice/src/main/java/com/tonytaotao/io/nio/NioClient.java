@@ -1,4 +1,4 @@
-package com.tonytaotao.io;
+package com.tonytaotao.io.nio;
 
 import java.io.BufferedReader;
 import java.io.IOException;
