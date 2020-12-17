@@ -1,4 +1,4 @@
-package com.tonytaotao.springboot.dubbo.es.config;
+package com.tonytaotao.springboot.dubbo.order.config;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig.Builder;

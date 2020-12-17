@@ -1,6 +1,5 @@
 package com.tonytaotao.springboot.dubbo.common.config.i18n;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;

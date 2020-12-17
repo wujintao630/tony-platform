@@ -4,7 +4,6 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.tonytaotao.springboot.dubbo.api.ApiAccountService;
-import com.tonytaotao.springboot.dubbo.api.ApiCommodityService;
 import com.tonytaotao.springboot.dubbo.order.order.entity.UserOrder;
 import com.tonytaotao.springboot.dubbo.order.order.mapper.OrderMapper;
 import com.tonytaotao.springboot.dubbo.order.order.service.OrderService;
@@ -31,9 +30,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, UserOrder> implem
     @Reference(interfaceClass = ApiAccountService.class, version = "1.0.0", retries = 3, check = false)
     private ApiAccountService apiAccountService;
 
-    @Reference(interfaceClass = ApiCommodityService.class, version = "1.0.0", retries = 3, check = false)
-    private ApiCommodityService apiCommodityService;
-
     @Override
     @LcnTransaction
     @Transactional
@@ -42,7 +38,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, UserOrder> implem
         double money = 2;
 
         boolean subBalanceBoo = apiAccountService.subAccountBalance(placeOrderReq.getUserId(), money);
-        boolean subQuality = apiCommodityService.subCommodityStock(placeOrderReq.getCommodityId(), placeOrderReq.getQuantity());
 
         UserOrder userOrder = new UserOrder();
         userOrder.setUserId(placeOrderReq.getUserId())
