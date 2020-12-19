@@ -28,11 +28,9 @@
         <module>template-api</module>
         <module>template-order</module>
         <module>template-account</module>
-        <module>template-commodity</module>
         <module>template-common</module>
         <module>template-tx-manager</module>
-        <module>template-docker</module>
-        <module>template-es</module>
+        <module>web-tools</module>
     </modules>
 
 </project>
