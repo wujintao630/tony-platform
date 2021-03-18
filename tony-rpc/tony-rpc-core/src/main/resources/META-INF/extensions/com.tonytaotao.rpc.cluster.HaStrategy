@@ -1,2 +1,0 @@
-failfast=com.tonytaotao.rpc.cluster.ha.FailfastHaStrategy
-failover=com.tonytaotao.rpc.cluster.ha.FailoverHaStrategy
