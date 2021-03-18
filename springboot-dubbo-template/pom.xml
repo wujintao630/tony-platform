@@ -30,7 +30,6 @@
         <module>template-account</module>
         <module>template-common</module>
         <module>template-tx-manager</module>
-        <module>web-tools</module>
     </modules>
 
 </project>
