@@ -1,4 +1,4 @@
-package com.tonytaotao.leecode;
+package com.tonytaotao.algorithm.leecode;
 
 /**
  * 回文数
