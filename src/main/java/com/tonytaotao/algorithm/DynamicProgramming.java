@@ -5,32 +5,17 @@ package com.tonytaotao.algorithm;
  */
 public class DynamicProgramming {
 
-
+    /**
+     * 0-1背包问题
+     */
+    /*
     public static void main(String[] args) {
-
         int capacity = 10;
         int amount = 5;
         int[] weight = {0,2,2,6,5,4};
         int[] value = {0,6,3,5,4,6};
         zeroOnePackage(capacity, amount, weight, value);
-
-        /*
-        int[] array = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        System.out.println(maxSubSequenceSum(array));
-        */
-
-        /*String strA = "abce";
-        String strB = "bcde";
-        findLCSeq(strA, strB);
-        findLCStr(strA, strB);*/
-
-
     }
-
-
-    /**
-     * 0-1背包问题
-     */
     public static void zeroOnePackage(int capacity, int amount, int[] weight, int[]value) {
 
         int[] x = new int[amount+1];// 记录物品装入的情况，0表示不装入，1表示装入
@@ -92,12 +77,16 @@ public class DynamicProgramming {
                 System.out.printf("%2d", (i));
             }
         }
-    }
+    }*/
 
     /**
      * 最大子序和
-     * @param array
      */
+    /*
+    public static void main(String[] args) {
+        int[] array = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        System.out.println(maxSubSequenceSum(array));
+    }
     public static int maxSubSequenceSum(int[] array){
         if (array.length == 0) {
             return 0;
@@ -119,102 +108,165 @@ public class DynamicProgramming {
         }
         return max;
     }
+    */
 
     /**
      * 最长公共子序列
-     * @param strA
-     * @param strB
      */
-    public static void findLCSeq(String strA, String strB) {
-
-        int aLength = strA.length();
-        int bLength = strB.length();
-
+    /*public static void main(String[] args) {
+        String strA = "abce";
+        String strB = "bcde";
         char[] charA = strA.toCharArray();
         char[] charB = strB.toCharArray();
-
-        int[][] lcs = new int[aLength + 1][bLength + 1];
-
-
-        for (int i = 1; i <= aLength; i++) {
-            for (int j = 1; j <= bLength; j++) {
-                if (charA[i-1] == charB[j-1]) {
-                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
-                } else {
-                    lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j-1]);
-                }
-            }
-        }
-
-        for (int i = 0; i < lcs.length; i++) {
-            for (int j = 0; j < lcs[i].length; j++) {
-                System.out.print(lcs[i][j]);
+        int lenA = charA.length;
+        int lenB = charB.length;
+        int[][] tempPath = findLongestCommonSubsequence(charA, charB, lenA, lenB);
+        for (int[] ints : tempPath) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
             }
             System.out.println();
         }
+        printLongestCommonSubsequence(charA, tempPath, lenA, lenB);
+    }
+    public static int[][] findLongestCommonSubsequence(char[] charA, char[] charB, int lenA, int lenB) {
 
-        //  反推结果
-        StringBuilder stringBuilder = new StringBuilder();
-        while (aLength > 0 && bLength > 0) {
-            if (charA[aLength - 1] == charB[bLength - 1]) {
-                stringBuilder.append(charA[aLength - 1]);
-                aLength--;
-                bLength--;
-            } else {
-                if (lcs[aLength][bLength - 1] > lcs[aLength - 1][bLength]) {
-                    bLength--;
-                } else if (lcs[aLength][bLength - 1] <= lcs[aLength - 1][bLength]) {
-                    aLength--;
+        // 存储匹配时当前公共子序列的长度，初始化第一行第一列为0
+        int[][] tempLength = new int[lenA + 1][lenB + 1];
+        for(int i = 0; i <= lenA; i++) {
+            tempLength[i][0] = 0;
+        }
+        for(int i = 0; i <= lenB ; i++) {
+            tempLength[0][i] = 0;
+        }
+
+        // 存储匹配时当前的匹配方向（1：占用，0：向上，-1：向左），初始化第一行第一列为0
+        int[][] tempPath = new int[lenA + 1][lenB + 1];
+        for(int i = 0; i <= lenA; i++) {
+            tempPath[i][0] = 0;
+        }
+        for(int i = 0; i <= lenB; i++) {
+            tempPath[0][i] = 0;
+        }
+
+        for (int i = 1 ; i <= lenA; i++) {
+            for (int j = 1; j <= lenB; j++) {
+                if (charA[i-1] == charB[j-1]) {
+                    tempLength[i][j] = tempLength[i-1][j-1] + 1;
+                    tempPath[i][j] = 1;
+                } else {
+                    if (tempLength[i-1][j] >= tempLength[i][j-1]) {
+                        tempLength[i][j] = tempLength[i-1][j];
+                        tempPath[i][j] = 0;
+                    } else {
+                        tempLength[i][j] = tempLength[i][j-1];
+                        tempPath[i][j] = -1;
+                    }
                 }
             }
         }
 
-        System.out.println(stringBuilder.reverse().toString());
-
+        return tempPath;
     }
+
+    public static void printLongestCommonSubsequence(char[] charA, int[][] tempPath, int i, int j) {
+        if (i == 0 || j == 0) {
+            return;
+        }
+        if (tempPath[i][j] == 1) {
+            printLongestCommonSubsequence(charA, tempPath, i-1, j-1);
+            System.out.print(charA[i-1]);
+        } else if (tempPath[i][j] == 0) {
+            printLongestCommonSubsequence(charA, tempPath, i-1, j);
+        } else if (tempPath[i][j] == -1) {
+            printLongestCommonSubsequence(charA, tempPath, i, j-1);
+        }
+    }*/
+
 
     /**
      * 最长公共子串
-     * @param strA
-     * @param strB
      */
-    public static void findLCStr(String strA, String strB) {
 
-        int maxLength = 0;
+    /*public static void main(String[] args) {
+        String strA = "eplm";
+        String strB = "people";
+        findLongestCommonStr(strA, strB);
 
-        int index = 0;
+    }
+    public static void findLongestCommonStr(String strA, String strB) {
 
-        int aLength = strA.length();
-        int bLength = strB.length();
         char[] charA = strA.toCharArray();
         char[] charB = strB.toCharArray();
-        int[][] lcs = new int[aLength][bLength];
+        int lenA = charA.length;
+        int lenB = charB.length;
 
-        for (int i = 0; i < aLength; i++) {
-            for (int j = 0; j < bLength; j++) {
-                if (i == 0 || j == 0) {
-                    if (charA[i] == charB[j]) {
-                        lcs[i][j] = 1;
-                    }
-                    if (lcs[i][j] > maxLength) {
-                        maxLength = lcs[i][j];
-                        index = i;
+        int commonStrIndexEnd = 0;
+        int maxLength = 0;
+        int[][] tempLength = new int[lenA + 1][lenB + 1];
+        for(int i = 0; i <= lenA; i++) {
+            tempLength[i][0] = 0;
+        }
+        for(int i = 0; i <= lenB ; i++) {
+            tempLength[0][i] = 0;
+        }
+
+        for (int i = 1; i <= lenA; i++) {
+            for (int j = 1; j <= lenB; j++) {
+                if (charA[i-1] == charB[j-1]) {
+                    tempLength[i][j] = tempLength[i-1][j-1] + 1;
+
+                    // 比较长度
+                    if (tempLength[i][j] > maxLength) {
+                        maxLength = tempLength[i][j];
+                        commonStrIndexEnd = i;
                     }
                 } else {
-                    if (charA[i] == charB[j]) {
-                        lcs[i][j] = lcs[i-1][j-1] + 1;
-                    }
-                    if (lcs[i][j] > maxLength) {
-                        maxLength = lcs[i][j];
-                        index = i + 1 - maxLength;
-                    }
+                    tempLength[i][j] = 0;
                 }
             }
         }
 
-        System.out.println(strA.substring(index, index + maxLength));
+        System.out.println("最长公共子串长度为：" + maxLength);
+        System.out.println("最长公共子串为：" + strA.substring(commonStrIndexEnd-maxLength, commonStrIndexEnd));
+    }*/
+
+    /**
+     * 最短路径
+     */
+   /* public static void main(String[] args) {
+
+        int[][] pathGrid = {{1,3,4,8}, {3,2,2,4}, {5,7,1,9}, {2,3,2,3}};
+        System.out.println(minPath(pathGrid));
 
     }
+    public static int minPath(int[][] pathGrid) {
 
+        if (pathGrid == null || pathGrid.length == 0 || pathGrid[0].length == 0) {
+            return 0;
+        }
 
+        int row = pathGrid.length;
+        int column = pathGrid[0].length;
+
+       int[][] minPathGrid  = new int[row][column];
+
+        minPathGrid[0][0] = pathGrid[0][0];
+
+       for (int i = 1; i<row; i++) {
+           minPathGrid[i][0] = minPathGrid[i-1][0] + pathGrid[i][0];
+       }
+
+        for (int i = 1; i<column; i++) {
+            minPathGrid[0][i] = minPathGrid[0][i-1] + pathGrid[0][i];
+        }
+
+        for(int i = 1; i< row; i++) {
+            for (int j = 1 ;j<column;j++) {
+                minPathGrid[i][j] = Math.min(minPathGrid[i-1][j], minPathGrid[i][j-1]) + pathGrid[i][j];
+            }
+        }
+
+        return minPathGrid[row-1][column-1];
+    }*/
 }
